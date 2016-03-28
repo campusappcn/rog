@@ -15,9 +15,9 @@ public class IntegerGenerator implements IGenerator{
     //is this generator generates positive value
     protected boolean mGeneratePositive = true;
 
-    protected int mMaxBound = (int) (Math.pow(2, 31) - 1);
+    protected int mMaxBound = Integer.MAX_VALUE;
 
-    protected int mMinBound = (int) (Math.pow(-2, 31));
+    protected int mMinBound = Integer.MIN_VALUE;
 
     // if this set settled, the positive value will be gotten from this set
     protected List<Integer> mPositiveValueSet;
@@ -37,15 +37,15 @@ public class IntegerGenerator implements IGenerator{
 
     private IntegerGenerator(){}
 
-    public void setIsGenerateNegative(boolean generateNegative){
+    public void setGenerateNegative(boolean generateNegative){
         mGenerateNegative = generateNegative;
     }
 
-    public void setIsGenerateZero(boolean generateZero){
+    public void setGenerateZero(boolean generateZero){
         mGenerateZero = generateZero;
     }
 
-    public void setIsGeneratePositive(boolean generatePositive){
+    public void setGeneratePositive(boolean generatePositive){
         mGeneratePositive = generatePositive;
     }
 
@@ -177,9 +177,9 @@ public class IntegerGenerator implements IGenerator{
         //is this generator generates positive value
         protected boolean mGeneratePositive = true;
 
-        protected int mMaxBound = (int) (Math.pow(2, 31) - 1);
+        protected int mMaxBound = Integer.MAX_VALUE;
 
-        protected int mMinBound = (int) (Math.pow(-2, 31));
+        protected int mMinBound = Integer.MIN_VALUE;
 
         // if this set settled, the positive value will be gotten from this set
         protected List<Integer> mPositiveValueSet;
@@ -197,17 +197,17 @@ public class IntegerGenerator implements IGenerator{
 
 
 
-        public Builder setIsGenerateNegative(boolean generateNegative){
+        public Builder setGenerateNegative(boolean generateNegative){
             mGenerateNegative = generateNegative;
             return this;
         }
 
-        public Builder setIsGenerateZero(boolean generateZero){
+        public Builder setGenerateZero(boolean generateZero){
             mGenerateZero = generateZero;
             return this;
         }
 
-        public Builder setIsGeneratePositive(boolean generatePositive){
+        public Builder setGeneratePositive(boolean generatePositive){
             mGeneratePositive = generatePositive;
             return this;
         }
@@ -257,9 +257,9 @@ public class IntegerGenerator implements IGenerator{
             if(!mGenerateNegative && !mGenerateZero && !mGeneratePositive){
                 throw new IllegalArgumentException("GenerateNegative GenerateZero GeneratePositive can't be all false");
             }
-            generator.setIsGenerateNegative(mGenerateNegative);
-            generator.setIsGenerateZero(mGenerateZero);
-            generator.setIsGeneratePositive(mGeneratePositive);
+            generator.setGenerateNegative(mGenerateNegative);
+            generator.setGenerateZero(mGenerateZero);
+            generator.setGeneratePositive(mGeneratePositive);
             if(mMaxBound <= mMinBound){
                 throw new IllegalArgumentException("Min bound can't be big than max bound");
             }

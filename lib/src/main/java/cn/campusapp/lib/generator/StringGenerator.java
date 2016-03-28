@@ -46,15 +46,15 @@ public class StringGenerator implements IGenerator {
 
     // the scale to generate
 
-    public void setIsGenerateNull(boolean generateNull){
+    public void setGenerateNull(boolean generateNull){
         mIsGenerateNull = generateNull;
     }
 
-    public void setIsGenerateEmpty(boolean generateEmpty){
+    public void setGenerateEmpty(boolean generateEmpty){
         mIsGenerateEmpty = generateEmpty;
     }
 
-    public void setIsGenerateNotEmpty(boolean generateNotEmpty){
+    public void setGenerateNotEmpty(boolean generateNotEmpty){
         mIsGenerateNotEmpty = generateNotEmpty;
     }
 
@@ -220,17 +220,17 @@ public class StringGenerator implements IGenerator {
 
         protected int mScaleOfEnglish = -1;
 
-        public Builder setIsGenerateNull(boolean generateNull){
+        public Builder setGenerateNull(boolean generateNull){
             mIsGenerateNull = generateNull;
             return this;
         }
 
-        public Builder setIsGenerateEmpty(boolean generateEmpty){
+        public Builder setGenerateEmpty(boolean generateEmpty){
             mIsGenerateEmpty = generateEmpty;
             return this;
         }
 
-        public Builder setIsGenerateNotEmpty(boolean generateNotEmpty){
+        public Builder setGenerateNotEmpty(boolean generateNotEmpty){
             mIsGenerateNotEmpty = generateNotEmpty;
             return this;
         }
@@ -268,9 +268,9 @@ public class StringGenerator implements IGenerator {
             if(!mIsGenerateEmpty && !mIsGenerateNull && !mIsGenerateNotEmpty){
                 throw new IllegalArgumentException("The generate null empty and not empty can't be all false");
             }
-            generator.setIsGenerateNull(mIsGenerateNull);
-            generator.setIsGenerateEmpty(mIsGenerateEmpty);
-            generator.setIsGenerateNotEmpty(mIsGenerateNotEmpty);
+            generator.setGenerateNull(mIsGenerateNull);
+            generator.setGenerateEmpty(mIsGenerateEmpty);
+            generator.setGenerateNotEmpty(mIsGenerateNotEmpty);
             generator.setCharSet(mCharSet);
             generator.setValueSet(mValueSet);
             if(mMaxLengthOfString <=0){
