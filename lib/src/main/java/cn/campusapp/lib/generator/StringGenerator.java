@@ -10,7 +10,10 @@ import cn.campusapp.lib.utils.StringUtil;
  * a String generator
  */
 public class StringGenerator implements IGenerator {
-
+    private static final int MODE_RANDOM = 0;//generate unicode char randomly
+    private static final int MODE_ASCII = 1;  //generate only ascii char
+    private static final int MODE_NORMAL = 2; //generate only ascii char and chinese
+    private int mMode = MODE_RANDOM;   //default MODE_RANDOM
     //will the generator generate null
     protected boolean mIsGenerateNull = true;
     //will the generator generate ""
@@ -83,6 +86,11 @@ public class StringGenerator implements IGenerator {
     }
 
 
+    public void setMode(int mode){
+        mMode = mode;
+    }
+
+
     public void setChineseScale(int scaleOfChinese, int scaleOfEnglish){
         if(scaleOfChinese == 0 && scaleOfEnglish == 0){
             throw new RuntimeException("Scale of chinese and english can't be all 0");
@@ -108,7 +116,7 @@ public class StringGenerator implements IGenerator {
                 case 0:
                     return "";
                 case 1:
-                    int length = mRandom.nextInt(mMaxLengthOfString);
+                    int length = mRandom.nextInt(mMaxLengthOfString + 1);
                     if(mCharSet != null && mCharSet.size() > 0){
                         return generateFromCharSet(mCharSet, length);
                     } else {
@@ -144,11 +152,23 @@ public class StringGenerator implements IGenerator {
     private String generateRandom(int length){
         StringBuilder builder = new StringBuilder();
         for(int i=0;i<length;i++){
-            if(getCharType(mScaleGenerateEnglish, mScaleGenerateChinese) == 0) {
-                builder.append(StringUtil.generateRandomChineseWord());
-            } else {
-                builder.append(StringUtil.generateRandomEnglishChar());
+            switch (mMode){
+                case MODE_ASCII:
+                    builder.append(StringUtil.generateRandomEnglishChar());
+                    break;
+                case MODE_NORMAL:
+                    if(getCharType(mScaleGenerateEnglish, mScaleGenerateChinese) == 0) {
+                        builder.append(StringUtil.generateRandomChineseWord());
+                    } else {
+                        builder.append(StringUtil.generateRandomEnglishChar());
+                    }
+                    break;
+                case MODE_RANDOM:
+                default:
+                    builder.append(StringUtil.generateRandomChar());
+                    break;
             }
+
         }
         return builder.toString();
     }
@@ -179,9 +199,9 @@ public class StringGenerator implements IGenerator {
      * @return -1 null, 0 "", 1 not empty string
      */
     private int getStringType(float scaleOfNull, float scaleOfEmpty, float scaleOfNotEmpty){
-        int nullUp = (int)(100 * scaleOfNull);
-        int emptyUp = nullUp + (int)(100 * scaleOfEmpty);
-        int notEmptyUp = emptyUp + (int)(100 * scaleOfNotEmpty);
+        int nullUp = (int)(100 * scaleOfNull);  // [0, 40)
+        int emptyUp = nullUp + (int)(100 * scaleOfEmpty); //[40, 60)
+        int notEmptyUp = emptyUp + (int)(100 * scaleOfNotEmpty); //[60, 100)
         int r = mRandom.nextInt(notEmptyUp);
         if(r < nullUp){
             return -1;
@@ -288,6 +308,7 @@ public class StringGenerator implements IGenerator {
         }
 
     }
+
 
 
 

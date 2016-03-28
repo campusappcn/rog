@@ -9,8 +9,6 @@ import timber.log.Timber;
  */
 public class StringUtil {
 
-    private static final String ENGLISH_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     /**
      * 随机生成一个中文字
      *
@@ -40,7 +38,12 @@ public class StringUtil {
 
     public static Character generateRandomEnglishChar(){
         Random random = new Random();
-        return ENGLISH_CHARS.charAt(random.nextInt(ENGLISH_CHARS.length()));
+        return (char) random.nextInt(256);
+    }
+
+    public static Character generateRandomChar(){
+        Random random = new Random();
+        return (char) random.nextInt((int) Character.MAX_VALUE + 1);
     }
 
 }

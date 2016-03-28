@@ -49,8 +49,7 @@ public class CharGenerator implements IGenerator{
     private int generateIntValueInBounds(char maxValue, char minValue){
         int maxIntValue = (int) maxValue;  // -> 1
         int minIntValue = (int) minValue; // -> 100
-        int generatedValue = minIntValue + mRandom.nextInt(maxIntValue - minIntValue + 1);  //1 + [0, 100) -> [1, 101) -> [1, 100]
-        return generatedValue;
+        return minIntValue + mRandom.nextInt(maxIntValue - minIntValue + 1);  //1 + [0, 100) -> [1, 101) -> [1, 100]
     }
 
     private char generateCharFromValueSet(List<Character> valueSet){
