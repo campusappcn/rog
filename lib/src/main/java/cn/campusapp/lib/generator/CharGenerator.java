@@ -10,7 +10,7 @@ import java.util.Random;
  * feature: support set max and min values
  * feature: support set value set
  */
-public class CharGenerator implements IGenerator{
+public class CharGenerator implements IGenerator<Character>{
 
 
     private char mMaxValue = Character.MAX_VALUE;
@@ -21,7 +21,7 @@ public class CharGenerator implements IGenerator{
     private Random mRandom = new Random();
 
 
-    private CharGenerator(){}
+    protected CharGenerator(){}
 
     public void setMaxValue(char maxValue){
         mMaxValue = maxValue;
@@ -43,6 +43,11 @@ public class CharGenerator implements IGenerator{
         } else {
             return (char) generateIntValueInBounds(mMaxValue, mMinValue);
         }
+    }
+
+    @Override
+    public Class<?> getClassToGenerate() {
+        return char.class;
     }
 
 

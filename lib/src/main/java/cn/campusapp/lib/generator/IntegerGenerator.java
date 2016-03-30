@@ -6,6 +6,8 @@ package cn.campusapp.lib.generator;
  */
 public class IntegerGenerator extends NumberGenerator<Integer> {
 
+    protected IntegerGenerator(){}
+
     @Override
     protected Integer getZero() {
         return 0;
@@ -36,6 +38,11 @@ public class IntegerGenerator extends NumberGenerator<Integer> {
         }
     }
 
+    @Override
+    public Class<?> getClassToGenerate() {
+        return int.class;
+    }
+
 
     public static class Builder extends NumberBuilder<Integer>{
 
@@ -54,7 +61,10 @@ public class IntegerGenerator extends NumberGenerator<Integer> {
             return new IntegerGenerator();
         }
 
-
+        @Override
+        public IntegerGenerator build() {
+            return (IntegerGenerator) super.build();
+        }
     }
 
 

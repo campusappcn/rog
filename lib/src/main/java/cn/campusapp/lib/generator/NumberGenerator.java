@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * Created by kris on 16/3/28.
  */
-public abstract class NumberGenerator <T extends Number> implements IGenerator {
+public abstract class NumberGenerator <T extends Number> implements IGenerator <T> {
     //is this generator generates negative value
     protected boolean mGenerateNegative = true;
     //is this generator generates zero value
@@ -295,7 +295,7 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator {
         protected abstract NumberGenerator<T> getNewGenerator();
 
 
-        public NumberGenerator build(){
+        public NumberGenerator<T> build(){
             NumberGenerator<T> generator = getNewGenerator();
             if(!mGenerateNegative && !mGenerateZero && !mGeneratePositive){
                 throw new IllegalArgumentException("GenerateNegative GenerateZero GeneratePositive can't be all false");

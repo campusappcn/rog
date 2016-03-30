@@ -9,7 +9,7 @@ import cn.campusapp.lib.utils.StringUtil;
  * Created by kris on 16/3/25.
  * a String generator
  */
-public class StringGenerator implements IGenerator {
+public class StringGenerator implements IGenerator<String> {
     private static final int MODE_RANDOM = 0;//generate unicode char randomly
     private static final int MODE_ASCII = 1;  //generate only ascii char
     private static final int MODE_NORMAL = 2; //generate only ascii char and chinese
@@ -45,7 +45,7 @@ public class StringGenerator implements IGenerator {
 
     private Random mRandom = new Random();
 
-    private StringGenerator(){}
+    protected StringGenerator(){}
 
     // the scale to generate
 
@@ -128,6 +128,10 @@ public class StringGenerator implements IGenerator {
         }
     }
 
+    @Override
+    public Class<?> getClassToGenerate() {
+        return String.class;
+    }
 
 
     private String generateFromSet(List<String> set){

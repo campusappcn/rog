@@ -6,6 +6,8 @@ import cn.campusapp.lib.utils.RandomExtendUtil;
  * Created by kris on 16/3/28.
  */
 public class ShortGenerator extends NumberGenerator<Short> {
+
+    protected ShortGenerator(){}
     @Override
     protected Short getZero() {
         return 0;
@@ -36,6 +38,11 @@ public class ShortGenerator extends NumberGenerator<Short> {
         }
     }
 
+    @Override
+    public Class<?> getClassToGenerate() {
+        return short.class;
+    }
+
     public static class Builder extends NumberBuilder<Short>{
 
         @Override
@@ -51,6 +58,12 @@ public class ShortGenerator extends NumberGenerator<Short> {
         @Override
         protected ShortGenerator getNewGenerator() {
             return new ShortGenerator();
+        }
+
+
+        @Override
+        public ShortGenerator build() {
+            return (ShortGenerator) super.build();
         }
     }
 }

@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Created by kris on 16/3/25.
  */
-public class BooleanGenerator implements IGenerator {
+public class BooleanGenerator implements IGenerator<Boolean>{
 
     protected boolean mIsGenerateFalse = true;
     protected boolean mIsGenerateTrue = true;
@@ -15,7 +15,7 @@ public class BooleanGenerator implements IGenerator {
 
     Random mRandom = new Random();
 
-    private BooleanGenerator(){}
+    protected BooleanGenerator(){}
 
     public void setGenerateFalse(boolean generateFalse){
         mIsGenerateFalse = generateFalse;
@@ -37,11 +37,16 @@ public class BooleanGenerator implements IGenerator {
     }
 
     @Override
-    public Object generate() {
+    public Boolean generate() {
         float scaleOfFalse = mIsGenerateFalse ? mScaleOfFalse : 0;
         float scaleOfTrue = mIsGenerateTrue ? mScaleOfTrue : 0;
 
         return getTrueOrFalse(scaleOfFalse, scaleOfTrue);
+    }
+
+    @Override
+    public Class<?> getClassToGenerate() {
+        return boolean.class;
     }
 
     /**
@@ -65,17 +70,20 @@ public class BooleanGenerator implements IGenerator {
         protected int mScaleOfTrue = -1;
 
 
-        public void setGenerateFalse(boolean generateFalse){
+        public Builder setGenerateFalse(boolean generateFalse){
             mIsGenerateFalse = generateFalse;
+            return this;
         }
 
-        public void setGenerateTrue(boolean generateTrue){
+        public Builder setGenerateTrue(boolean generateTrue){
             mIsGenerateTrue = generateTrue;
+            return this;
         }
 
-        public void setScale(int scaleOfFalse, int scaleOfTrue){
+        public Builder setScale(int scaleOfFalse, int scaleOfTrue){
             mScaleOfFalse = scaleOfFalse;
             mScaleOfTrue = scaleOfTrue;
+            return this;
         }
 
 

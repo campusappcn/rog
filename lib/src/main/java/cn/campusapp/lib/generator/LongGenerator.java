@@ -6,6 +6,7 @@ import cn.campusapp.lib.utils.RandomExtendUtil;
  * Created by kris on 16/3/28.
  */
 public class LongGenerator extends NumberGenerator<Long> {
+    protected LongGenerator(){}
     @Override
     protected Long getZero() {
         return 0l;
@@ -36,6 +37,11 @@ public class LongGenerator extends NumberGenerator<Long> {
         }
     }
 
+    @Override
+    public Class<?> getClassToGenerate() {
+        return long.class;
+    }
+
 
     public static class Builder extends NumberBuilder{
 
@@ -52,6 +58,11 @@ public class LongGenerator extends NumberGenerator<Long> {
         @Override
         protected LongGenerator getNewGenerator() {
             return new LongGenerator();
+        }
+
+        @Override
+        public LongGenerator build() {
+            return (LongGenerator) super.build();
         }
     }
 }

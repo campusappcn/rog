@@ -36,6 +36,11 @@ public class DoubleGenerator extends NumberGenerator<Double> {
         }
     }
 
+    @Override
+    public Class<?> getClassToGenerate() {
+        return double.class;
+    }
+
     public static class Builder extends NumberBuilder<Double>{
 
         @Override
@@ -51,6 +56,12 @@ public class DoubleGenerator extends NumberGenerator<Double> {
         @Override
         protected DoubleGenerator getNewGenerator() {
             return new DoubleGenerator();
+        }
+
+
+        @Override
+        public DoubleGenerator build() {
+            return (DoubleGenerator) super.build();
         }
     }
 }

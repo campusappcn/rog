@@ -24,6 +24,11 @@ public class RandomExtendUtil {
         return val;
     }
 
+
+    public static byte nextByte(Random random, byte n){
+        return (byte) random.nextInt(n);
+    }
+
     /**
      *
      * @param random

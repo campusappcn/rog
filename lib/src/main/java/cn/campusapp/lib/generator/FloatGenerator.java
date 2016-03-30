@@ -37,6 +37,11 @@ public class FloatGenerator extends NumberGenerator<Float> {
         }
     }
 
+    @Override
+    public Class<?> getClassToGenerate() {
+        return float.class;
+    }
+
     public static class Builder extends NumberBuilder<Float>{
 
         @Override
@@ -52,6 +57,12 @@ public class FloatGenerator extends NumberGenerator<Float> {
         @Override
         protected FloatGenerator getNewGenerator() {
             return new FloatGenerator();
+        }
+
+
+        @Override
+        public FloatGenerator build() {
+            return (FloatGenerator) super.build();
         }
     }
 }
