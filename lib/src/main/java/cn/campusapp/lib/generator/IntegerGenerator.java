@@ -31,7 +31,7 @@ public class IntegerGenerator extends NumberGenerator<Integer> {
     protected int compare(Integer value1, Integer value2) {
         if(value1 > value2){
             return 1;
-        } else if(value1 == value2){
+        } else if(value1.equals(value2)){
             return 0;
         } else {
             return -1;

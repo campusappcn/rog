@@ -11,20 +11,20 @@ public class RandomExtendUtil {
     /**
      *
      * @param random
-     * @param n
+     * @param n > 0
      * @return long [0, n)
      */
     public static long nextLong(Random random, long n){
-        // error checking and 2^x checking removed for simplicity.
-        long bits, val;
-        do {
-            bits = (random.nextLong() << 1) >>> 1;
-            val = bits % n;
-        } while (bits-val+(n-1) < 0L);
-        return val;
+        return (long) (n * random.nextFloat());
     }
 
 
+    /**
+     *
+     * @param random
+     * @param n > 0
+     * @return byte [0, n)
+     */
     public static byte nextByte(Random random, byte n){
         return (byte) random.nextInt(n);
     }
@@ -32,31 +32,31 @@ public class RandomExtendUtil {
     /**
      *
      * @param random
-     * @param n
+     * @param n > 0
      * @return short [0, n)
      */
     public static short nextShort(Random random, short n){
-        return (short) random.nextInt(n);
+        return (short) random.nextInt(n< 0? -n : n);
     }
 
     /**
      *
      * @param random
-     * @param n
+     * @param n > 0
      * @return float [0, n)
      */
     public static float nextFloat(Random random, float n){
-        return (n - 1)* random.nextFloat();
+        return n* random.nextFloat();
     }
 
     /**
      *
      * @param random
-     * @param n
+     * @param n > 0
      * @return double [0, n)
      */
     public static double nextDouble(Random random, double n){
-        return (n - 1) * random.nextDouble();
+        return n* random.nextDouble();
     }
 
 

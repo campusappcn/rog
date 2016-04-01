@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.campusapp.lib.cache.FieldCache;
 import cn.campusapp.lib.factory.ITypeGeneratorFactory;
 import cn.campusapp.lib.factory.TypeGeneratorFactory;
 import cn.campusapp.lib.store.SubClassStore;
@@ -106,12 +107,17 @@ public class ClassGenerator<T> implements IGenerator<T>{
     }
 
     private List<Field> listAllFields(Class<?> clazz){
+
         Class<?> tempClass = clazz;
-        List<Field> fields = new ArrayList<>();
-        do{
-            fields.addAll(Arrays.asList(tempClass.getDeclaredFields()));
-            tempClass = tempClass.getSuperclass();
-        } while (tempClass != null);
+        List<Field> fields = FieldCache.get(clazz);
+        if(fields == null) {
+            fields = new ArrayList<>();
+            do {
+                fields.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+                tempClass = tempClass.getSuperclass();
+            } while (tempClass != null);
+        }
+        FieldCache.cache(clazz, fields);
         return fields;
     }
 

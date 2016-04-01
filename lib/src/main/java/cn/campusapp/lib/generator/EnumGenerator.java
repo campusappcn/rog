@@ -1,6 +1,5 @@
 package cn.campusapp.lib.generator;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
@@ -61,13 +60,13 @@ public class EnumGenerator<E> implements IGenerator<E> {
      * @param clazz
      * @return return null when cant find any value from this enum
      */
+    @SuppressWarnings("unchecked")
     private E generateAccordingToClass(Class<E> clazz){
         if(!clazz.isEnum()){
             throw new IllegalArgumentException("The class must be enum");
         }
         try {
-            Method valuesMethod = clazz.getMethod("values");
-            E [] values = (E[]) valuesMethod.invoke(null, null);
+            E [] values = clazz.getEnumConstants();
             if(values.length == 0){
                 return null;
             }
