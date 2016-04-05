@@ -26,14 +26,14 @@ public class ClassGenerator<T> implements IGenerator<T>{
 
 
     protected ClassGenerator(Class<T> clazz, ITypeGeneratorFactory factory){
-        if(mClazz == null || mGeneratorFactory == null){
+        if(clazz == null || factory == null){
             throw new IllegalArgumentException("The class and factory parameter can't be null");
         }
         mClazz = clazz;
         mGeneratorFactory = factory;
     }
 
-    public void putTypeGenerator(IGenerator generator){
+    public void setTypeGenerator(IGenerator generator){
         mGeneratorFactory.setGenerator(generator);
     }
 
@@ -41,6 +41,7 @@ public class ClassGenerator<T> implements IGenerator<T>{
         IGenerator<E> generator = mGeneratorFactory.getGenerator(clazz);
         if(generator == null){
             generator = createNewGenerator(clazz);
+            setTypeGenerator(generator);
         }
         return generator;
     }
@@ -78,7 +79,7 @@ public class ClassGenerator<T> implements IGenerator<T>{
     @Override
     public T generate() {
         if(mClazz.isInterface() || Modifier.isAbstract(mClazz.getModifiers())){
-            putTypeGenerator(new InterfaceOrAbstractClassGenerator.Builder<T>(mClazz, mGeneratorFactory, mStore).setScaleOfNull(mScaleOfNull).build());
+            setTypeGenerator(new InterfaceOrAbstractClassGenerator.Builder<T>(mClazz, mGeneratorFactory, mStore).setScaleOfNull(mScaleOfNull).build());
             return getGenerator(mClazz).generate();
         } else {
             //TODO normal class, find no parameter constructor to get a object
@@ -171,13 +172,9 @@ public class ClassGenerator<T> implements IGenerator<T>{
         }
 
 
-        public Builder<E> putTypeGenerator(IGenerator generator){
+        public Builder<E> setTypeGenerator(IGenerator generator){
             mGeneratorFactory.setGenerator(generator);
             return this;
-        }
-
-        protected <S> IGenerator<S> getGenerator(Class<S> clazz){
-            return mGeneratorFactory.getGenerator(clazz);
         }
 
         public Builder<E> setScaleOfNull(float scale){

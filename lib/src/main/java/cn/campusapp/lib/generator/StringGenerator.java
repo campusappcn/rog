@@ -10,9 +10,9 @@ import cn.campusapp.lib.utils.StringUtil;
  * a String generator
  */
 public class StringGenerator implements IGenerator<String> {
-    private static final int MODE_RANDOM = 0;//generate unicode char randomly
-    private static final int MODE_ASCII = 1;  //generate only ascii char
-    private static final int MODE_NORMAL = 2; //generate only ascii char and chinese
+    public static final int MODE_RANDOM = 0;//generate unicode char randomly
+    public static final int MODE_ASCII = 1;  //generate only ascii char
+    public static final int MODE_NORMAL = 2; //generate only ascii char and chinese
     private int mMode = MODE_RANDOM;   //default MODE_RANDOM
     //will the generator generate null
     protected boolean mIsGenerateNull = true;
@@ -116,7 +116,7 @@ public class StringGenerator implements IGenerator<String> {
                 case 0:
                     return "";
                 case 1:
-                    int length = mRandom.nextInt(mMaxLengthOfString + 1);
+                    int length = 1 + mRandom.nextInt(mMaxLengthOfString);
                     if(mCharSet != null && mCharSet.size() > 0){
                         return generateFromCharSet(mCharSet, length);
                     } else {
@@ -244,6 +244,8 @@ public class StringGenerator implements IGenerator<String> {
 
         protected int mScaleOfEnglish = -1;
 
+        protected int mMode = -1;
+
         public Builder setGenerateNull(boolean generateNull){
             mIsGenerateNull = generateNull;
             return this;
@@ -271,6 +273,11 @@ public class StringGenerator implements IGenerator<String> {
 
         public Builder setValueSet(List<String> valueSet){
             mValueSet = valueSet;
+            return this;
+        }
+
+        public Builder setMode(int mode){
+            mMode = mode;
             return this;
         }
 
@@ -306,6 +313,9 @@ public class StringGenerator implements IGenerator<String> {
             }
             if(mScaleOfChinese >= 0 && mScaleOfEnglish >=0 && (mScaleOfChinese + mScaleOfEnglish) > 0){
                 generator.setChineseScale(mScaleOfChinese, mScaleOfEnglish);
+            }
+            if(mMode != -1){
+                generator.setMode(mMode);
             }
             return generator;
 

@@ -96,7 +96,7 @@ public class EnumGenerator<E> implements IGenerator<E> {
             mClazz = clazz;
         }
 
-        public Builder setValueSet(List<T> values){
+        public Builder<T> setValueSet(List<T> values){
             mValueSet = values;
             return this;
         }
@@ -104,7 +104,7 @@ public class EnumGenerator<E> implements IGenerator<E> {
         /**
          * @param scale must [0.0f, 1.0f]
          */
-        public Builder setScaleOfNull(float scale){
+        public Builder<T> setScaleOfNull(float scale){
             if(scale <0.0f || scale >1.0f){
                 throw new IllegalArgumentException("The scale must in the bound of [0.0f, 1.0f]");
             }

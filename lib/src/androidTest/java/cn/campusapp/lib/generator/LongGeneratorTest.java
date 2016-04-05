@@ -14,25 +14,22 @@ import java.util.Random;
 import cn.campusapp.lib.BaseUnitTest;
 
 /**
- * Created by kris on 16/4/1.
+ * Created by kris on 16/4/5.
  */
 @RunWith(AndroidJUnit4.class)
-public class IntegerGeneratorTest extends BaseUnitTest{
-
-
-
+public class LongGeneratorTest extends BaseUnitTest {
 
     @Test
     public void testGenerateZero(){
 
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        LongGenerator generator = new LongGenerator.Builder()
                 .setGenerateZero(false)
                 .build();
         for(int i=0;i<10000;i++){
-            int generated = generator.generate();
-            Assert.assertTrue(generated !=0 );
+            long generated = generator.generate();
+            Assert.assertTrue(generated != 0);
             if(generated < 0){
                 hasGenerateNegative = true;
             }
@@ -47,7 +44,7 @@ public class IntegerGeneratorTest extends BaseUnitTest{
     @Test
     public void testGenerateNegative(){
 
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        LongGenerator generator = new LongGenerator.Builder()
                 .setGenerateNegative(false)
                 .build();
         for(int i=0;i<10000;i++){
@@ -57,7 +54,7 @@ public class IntegerGeneratorTest extends BaseUnitTest{
 
     @Test
     public void testGeneratePositive(){
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        LongGenerator generator = new LongGenerator.Builder()
                 .setGeneratePositive(false)
                 .build();
         for(int i=0;i<10000;i++){
@@ -69,12 +66,12 @@ public class IntegerGeneratorTest extends BaseUnitTest{
     public void testSetMaxBound(){
         Random random  = new Random();
         for(int i=0;i<100;i++) {
-            int maxBound = random.nextInt();
-            IntegerGenerator generator = new IntegerGenerator.Builder()
+            long maxBound = random.nextLong();
+            LongGenerator generator = new LongGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
             for(int j=0;j<10000;j++){
-                Assert.assertTrue(generator.generate() <= maxBound);
+                Assert.assertTrue(generator.generate() < maxBound);
             }
         }
     }
@@ -84,8 +81,8 @@ public class IntegerGeneratorTest extends BaseUnitTest{
     public void testSetMinBound(){
         Random random = new Random();
         for(int i=0;i<100;i++){
-            int minBound = random.nextInt();
-            IntegerGenerator generator = new IntegerGenerator.Builder()
+            long minBound = random.nextLong();
+            LongGenerator generator = new LongGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
             for(int j=0;j<10000;j++){
@@ -96,15 +93,15 @@ public class IntegerGeneratorTest extends BaseUnitTest{
 
     @Test
     public void testSetPositiveValueSet(){
-        List<Integer> mValueSet = new ArrayList<>();
-        mValueSet.add(1);
-        mValueSet.add(5);
-        mValueSet.add(10434);
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        List<Long> mValueSet = new ArrayList<>();
+        mValueSet.add(1l);
+        mValueSet.add(5l);
+        mValueSet.add(10434l);
+        LongGenerator generator = new LongGenerator.Builder()
                 .setPositiveValueSet(mValueSet)
                 .build();
         for(int i=0;i<10000;i++){
-            int generated = generator.generate();
+            long generated = generator.generate();
             if(generated > 0) {
                 Assert.assertTrue(mValueSet.contains(generated));
             }
@@ -115,15 +112,15 @@ public class IntegerGeneratorTest extends BaseUnitTest{
 
     @Test
     public void testSetNegativeValueSet(){
-        List<Integer> mValueSet = new ArrayList<>();
-        mValueSet.add(-1);
-        mValueSet.add(-5);
-        mValueSet.add(-330);
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        List<Long> mValueSet = new ArrayList<>();
+        mValueSet.add(-1l);
+        mValueSet.add(-5l);
+        mValueSet.add(-330l);
+        LongGenerator generator = new LongGenerator.Builder()
                 .setNegativeValueSet(mValueSet)
                 .build();
         for(int i=0;i<10000;i++){
-            int generated = generator.generate();
+            long generated = generator.generate();
             if(generated <0) {
                 Assert.assertTrue(mValueSet.contains(generated));
             }
@@ -133,13 +130,13 @@ public class IntegerGeneratorTest extends BaseUnitTest{
 
     @Test
     public void testSetValueSet(){
-        List<Integer> mValueSet = new ArrayList<>();
+        List<Long> mValueSet = new ArrayList<>();
         Random random = new Random();
         for(int i =0;i<1000;i++){
-            mValueSet.add(random.nextInt());
+            mValueSet.add(random.nextLong());
         }
 
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        LongGenerator generator = new LongGenerator.Builder()
                 .setValueSet(mValueSet)
                 .build();
 
@@ -154,11 +151,11 @@ public class IntegerGeneratorTest extends BaseUnitTest{
         boolean hasGenerateZero = false;
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
-        IntegerGenerator generator = new IntegerGenerator.Builder()
+        LongGenerator generator = new LongGenerator.Builder()
                 .setGenerateScale(1, 1, 1)
                 .build();
         for(int i=0;i< 10000;i++){
-            int generated = generator.generate();
+            long generated = generator.generate();
             if(generated < 0){
                 hasGenerateNegative = true;
             }
@@ -170,22 +167,22 @@ public class IntegerGeneratorTest extends BaseUnitTest{
             }
         }
 
-        IntegerGenerator generator1 = new IntegerGenerator.Builder()
+        LongGenerator generator1 = new LongGenerator.Builder()
                 .setGenerateScale(1, 0, 0)
                 .build();
         for(int i=0;i<10000;i++){
-            int generated = generator1.generate();
+            long generated = generator1.generate();
             Assert.assertTrue(generated > 0);
         }
 
-        IntegerGenerator generator2 = new IntegerGenerator.Builder()
+        LongGenerator generator2 = new LongGenerator.Builder()
                 .setGenerateScale(0, 0, 1)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator2.generate() < 0);
         }
 
-        IntegerGenerator generator3 = new IntegerGenerator.Builder()
+        LongGenerator generator3 = new LongGenerator.Builder()
                 .setGenerateScale(1, 1, 0)
                 .build();
         for(int i=0;i<10000;i++){
@@ -194,8 +191,6 @@ public class IntegerGeneratorTest extends BaseUnitTest{
 
         Assert.assertTrue(hasGenerateNegative && hasGenerateZero && hasGeneratePositive);
     }
-
-
 
 
 }

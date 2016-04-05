@@ -1,5 +1,6 @@
 package cn.campusapp.lib.generator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,9 +20,9 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
     protected T mMinBound;
 
     // if this set settled, the positive value will be gotten from this set
-    protected List<T> mPositiveValueSet;
+    protected List<T> mPositiveValueSet = new ArrayList<>();
     // if this set settled, the negative value will be gotten from this set
-    protected List<T> mNegativeValueSet;
+    protected List<T> mNegativeValueSet = new ArrayList<>();
 
     //if this set settled, the value will be gotten from this set
     protected List<T> mValueSet;
@@ -55,11 +56,23 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
     }
 
     public void setPositiveValueSet(List<T> set){
-        mPositiveValueSet = set;
+        if(set != null){
+            for(T t : set){
+                if(larger(t, getZero())) {
+                    mPositiveValueSet.add(t);
+                }
+            }
+        }
     }
 
     public void setNegativeValueSet(List<T> set){
-        mNegativeValueSet = set;
+        if(set != null){
+            for(T t : set){
+                if(smaller(t, getZero())) {
+                    mNegativeValueSet.add(t);
+                }
+            }
+        }
     }
 
     public void setValueSet(List<T> set){
@@ -80,7 +93,7 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
         }
         mScaleGenerateNegative = 1.0f * negativeScale / (positiveScale + zeroScale + negativeScale);
         mScaleGeneratePositive = 1.0f * positiveScale / (positiveScale + zeroScale + negativeScale);
-        mScaleGenerateZero = 1.0f * positiveScale / (positiveScale + zeroScale + negativeScale);
+        mScaleGenerateZero = 1.0f * zeroScale / (positiveScale + zeroScale + negativeScale);
     }
 
 

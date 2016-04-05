@@ -26,6 +26,7 @@ public class RandomExtendUtil {
      * @return byte [0, n)
      */
     public static byte nextByte(Random random, byte n){
+        n = n < Byte.MAX_VALUE ? n : Byte.MAX_VALUE;
         return (byte) random.nextInt(n);
     }
 
@@ -36,6 +37,7 @@ public class RandomExtendUtil {
      * @return short [0, n)
      */
     public static short nextShort(Random random, short n){
+        n = n < Short.MAX_VALUE ? n : Short.MAX_VALUE;
         return (short) random.nextInt(n< 0? -n : n);
     }
 
