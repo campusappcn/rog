@@ -13,7 +13,7 @@ public class StringGenerator implements IGenerator<String> {
     public static final int MODE_RANDOM = 0;//generate unicode char randomly
     public static final int MODE_ASCII = 1;  //generate only ascii char
     public static final int MODE_NORMAL = 2; //generate only ascii char and chinese
-    private int mMode = MODE_RANDOM;   //default MODE_RANDOM
+    private int mMode = MODE_NORMAL;   //default MODE_RANDOM
     //will the generator generate null
     protected boolean mIsGenerateNull = true;
     //will the generator generate ""

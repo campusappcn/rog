@@ -6,11 +6,14 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import cn.campusapp.lib.cache.FieldCache;
+import cn.campusapp.lib.factory.BasicTypeGeneratorFactory;
 import cn.campusapp.lib.factory.ITypeGeneratorFactory;
 import cn.campusapp.lib.factory.TypeGeneratorFactory;
 import cn.campusapp.lib.store.SubClassStore;
+import timber.log.Timber;
 
 /**
  * Created by kris on 16/3/28.
@@ -18,11 +21,13 @@ import cn.campusapp.lib.store.SubClassStore;
 public class ClassGenerator<T> implements IGenerator<T>{
     private static int STRATEGY_STRICT = 0;  //strict,
     private static int STRATEGY_LAX = 1;
+    private static int mMaxLevel = 5;
     private Class<T> mClazz;
     private ITypeGeneratorFactory mGeneratorFactory;
     private float mScaleOfNull = 0.1f;  //the scale of the generator generate null;
     private SubClassStore mStore;
     private int mStrategy = STRATEGY_STRICT;
+    Random mRandom = new Random();
 
 
     protected ClassGenerator(Class<T> clazz, ITypeGeneratorFactory factory){
@@ -37,26 +42,44 @@ public class ClassGenerator<T> implements IGenerator<T>{
         mGeneratorFactory.setGenerator(generator);
     }
 
+    public void setMaxLevel(int maxLevel){
+        mMaxLevel = maxLevel;
+    }
+
     protected <E> IGenerator<E> getGenerator(Class<E> clazz){
         IGenerator<E> generator = mGeneratorFactory.getGenerator(clazz);
-        if(generator == null){
+        if(generator == null) {
             generator = createNewGenerator(clazz);
             setTypeGenerator(generator);
         }
         return generator;
     }
 
+
+
     @SuppressWarnings("unchecked")
     public <E> IGenerator<E> createNewGenerator(Class<E> clazz){
         IGenerator<E> generator = null;
         if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())){
-            generator = new InterfaceOrAbstractClassGenerator.Builder<E>(clazz, mGeneratorFactory, mStore).build();
+            generator = new InterfaceOrAbstractClassGenerator.Builder<E>(clazz, mGeneratorFactory, mStore)
+                    .setScaleOfNull(mScaleOfNull)
+                    .build();
         } else if(clazz.isEnum()){
-            generator = new EnumGenerator.Builder<>(clazz).build();
+            generator = new EnumGenerator.Builder<>(clazz)
+                    .setScaleOfNull(mScaleOfNull)
+                    .build();
         } else if(clazz.isArray()){
-            generator = (IGenerator<E>) new ArrayGenerator.Builder<>((Class<Object[]>) clazz).build();
+            generator = (IGenerator<E>) new ArrayGenerator
+                    .Builder<>((Class<Object[]>) clazz)
+                    .setScaleOfNull(mScaleOfNull)
+                    .setGenerator(getGenerator(clazz.getComponentType()))
+                    .build();
         } else {
-            generator = new ClassGenerator.Builder<>(clazz).build();
+            generator = new ClassGenerator.Builder<>(clazz, mGeneratorFactory, mStore)
+                    .setScaleOfNull(mScaleOfNull)
+                    .setStrategy(mStrategy)
+                    .setMaxLevel(mMaxLevel)
+                    .build();
         }
         return generator;
     }
@@ -76,31 +99,75 @@ public class ClassGenerator<T> implements IGenerator<T>{
         mStrategy = strategy;
     }
 
+
     @Override
     public T generate() {
-        if(mClazz.isInterface() || Modifier.isAbstract(mClazz.getModifiers())){
-            setTypeGenerator(new InterfaceOrAbstractClassGenerator.Builder<T>(mClazz, mGeneratorFactory, mStore).setScaleOfNull(mScaleOfNull).build());
-            return getGenerator(mClazz).generate();
-        } else {
-            //TODO normal class, find no parameter constructor to get a object
-            T object = getNewClassInstance(mClazz);
+        return generate(0);
+    }
 
-            return setFieldValueOfObject(object);
+    protected T generate(int level){
+        if(mClazz.isInterface() || Modifier.isAbstract(mClazz.getModifiers())){
+            InterfaceOrAbstractClassGenerator<T> generator = (InterfaceOrAbstractClassGenerator<T>) getGenerator(mClazz);
+            return generator.generate(level);
+        } else {
+
+            IGenerator<T> generator = getGenerator(mClazz);
+            if(generator != null && ! (generator instanceof ClassGenerator)){
+                return generator.generate();
+            } else {
+                if(isGenerateNull(mScaleOfNull)){
+                    return null;
+                } else {
+                    T object = getNewClassInstance(mClazz);
+
+                    return setFieldValueOfObject(object, level);
+                }
+            }
         }
     }
 
-    private T setFieldValueOfObject(T object){
+    protected boolean isGenerateNull(float scaleOfNull){
+        float r = mRandom.nextFloat();
+        if(r < scaleOfNull){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private T setFieldValueOfObject(T object, int level){
         Class<?> clazz = object.getClass();
         List<Field> fields = listAllFields(clazz);
         for(Field  f: fields){
             if(!Modifier.isFinal(f.getModifiers())) {
-                f.setAccessible(true);
-                Object value = getGenerator(f.getType()).generate();
                 try {
-                    f.set(object, value);
+                    f.setAccessible(true);
+                    Object value = null;
+                    if(level < mMaxLevel) {
+                        IGenerator<?> generator = getGenerator(f.getType());
+                        if(generator instanceof ClassGenerator){
+                            value = ((ClassGenerator) generator).generate(++level);
+                        } else if(generator instanceof InterfaceOrAbstractClassGenerator){
+                            value = ((InterfaceOrAbstractClassGenerator) generator).generate(++level);
+                        } else {
+                            value = generator.generate();
+                        }
+                    } else {
+                        if(BasicTypeGeneratorFactory.INSTANCE.isBasicType(f.getType())){
+                            value = getGenerator(f.getType()).generate();
+                        } else {
+                            value = null;
+                        }
+                    }
+                    if(value != null) {
+                        f.set(object, value);
+                    }
+                } catch (SecurityException e){
+                    Timber.e(e, "");
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Can't access to field " + f.getClass().toString());
+                    Timber.e(e, "Can't set the value of this field of %s", f.toString());
                 }
+
             }
         }
 
@@ -111,14 +178,17 @@ public class ClassGenerator<T> implements IGenerator<T>{
 
         Class<?> tempClass = clazz;
         List<Field> fields = FieldCache.get(clazz);
+        int level = 0;
         if(fields == null) {
             fields = new ArrayList<>();
             do {
                 fields.addAll(Arrays.asList(tempClass.getDeclaredFields()));
                 tempClass = tempClass.getSuperclass();
-            } while (tempClass != null);
+                level ++;
+            } while (tempClass != null && tempClass != Object.class && level <= mMaxLevel);
+            FieldCache.cache(clazz, fields);
         }
-        FieldCache.cache(clazz, fields);
+
         return fields;
     }
 
@@ -126,7 +196,7 @@ public class ClassGenerator<T> implements IGenerator<T>{
     private T getNewClassInstance(Class<T> clazz){
         Constructor<T> constructor = null;
         try{
-            constructor = mClazz.getConstructor();
+            constructor = mClazz.getDeclaredConstructor();
         } catch (NoSuchMethodException e){
             throw new RuntimeException("The class don't have a default constructor");
         }
@@ -152,28 +222,39 @@ public class ClassGenerator<T> implements IGenerator<T>{
         private float mScaleOfNull = 0.1f;  //the scale of the generator generate null;
         private SubClassStore mSubClassStore;
         private int mStrategy = STRATEGY_LAX;
+        private int mMaxLevel = -1;
 
-        protected Builder(Class<E> clazz){
+        public Builder(Class<E> clazz){
             this(clazz, null, null);
         }
 
-        protected Builder(Class<E> clazz, ITypeGeneratorFactory factory){
+        public Builder(Class<E> clazz, ITypeGeneratorFactory factory){
             this(clazz, factory, null);
         }
 
-        protected Builder(Class<E> clazz, SubClassStore subClassStore){
+        public Builder(Class<E> clazz, SubClassStore subClassStore){
             this(clazz, null, subClassStore);
         }
 
-        protected Builder(Class<E> clazz, ITypeGeneratorFactory factory, SubClassStore store){
+        public Builder(Class<E> clazz, ITypeGeneratorFactory factory, SubClassStore store){
             mClazz = clazz;
             mGeneratorFactory = factory != null ? factory : TypeGeneratorFactory.getFactory();
             mSubClassStore = store != null ? store : SubClassStore.getInstance();
         }
 
 
+        /**
+         *  if the generator is a instance of ClassGenerator, it may not make effect. So implement a IGenerator yourself.
+         * @param generator
+         * @return
+         */
         public Builder<E> setTypeGenerator(IGenerator generator){
             mGeneratorFactory.setGenerator(generator);
+            return this;
+        }
+
+        public <S> Builder<E> setSubClass(Class<S> clazz, List<Class<? extends S>> subClasses){
+            mSubClassStore.setInterfaceOrAbstractMap(clazz, subClasses);
             return this;
         }
 
@@ -185,8 +266,24 @@ public class ClassGenerator<T> implements IGenerator<T>{
             return this;
         }
 
+        /**
+         * do not effect now
+         * @param strategy
+         * @return
+         */
         public Builder<E> setStrategy(int strategy){
             mStrategy = strategy;
+            return this;
+        }
+
+        /**
+         * set the max level of the object reference. For example, Class1 reference2 Class2.
+         * the Class2's level is 1. if Max Level is 1. Then Class2's can't generate any more object except primitive type.
+         * @param level
+         * @return
+         */
+        public Builder<E> setMaxLevel(int level){
+            mMaxLevel = level;
             return this;
         }
 
@@ -195,6 +292,9 @@ public class ClassGenerator<T> implements IGenerator<T>{
             generator.setScaleOfNull(mScaleOfNull);
             generator.setSubClassStore(mSubClassStore);
             generator.setStrategy(mStrategy);
+            if(mMaxLevel >= 0){
+                generator.setMaxLevel(mMaxLevel);
+            }
             return generator;
         }
     }

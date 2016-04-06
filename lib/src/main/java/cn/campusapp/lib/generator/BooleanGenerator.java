@@ -69,6 +69,9 @@ public class BooleanGenerator implements IGenerator<Boolean>{
         protected int mScaleOfFalse = -1;
         protected int mScaleOfTrue = -1;
 
+        public Builder(){
+
+        }
 
         public Builder setGenerateFalse(boolean generateFalse){
             mIsGenerateFalse = generateFalse;

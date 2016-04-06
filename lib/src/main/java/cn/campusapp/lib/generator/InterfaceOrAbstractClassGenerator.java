@@ -54,7 +54,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
     protected <E> IGenerator<E> getGenerator(Class<E> clazz){
         IGenerator<E> generator = mFactory.getGenerator(clazz);
         if(generator == null){
-            generator = new ClassGenerator.Builder<E>(clazz).build();
+            generator = new ClassGenerator.Builder<E>(clazz, mFactory, mSubClassStore).setScaleOfNull(mScaleOfNull).build();
             setClassGenerator(generator);
         }
         return generator;
@@ -70,26 +70,37 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
 
     @Override
     public T generate() {
+        return generate(0);
+    }
+
+
+    public T generate(int level){
         T ret = null;
         if(!isGenerateNull(mScaleOfNull)){
             if(mObjectSet != null && mObjectSet.size() > 0){
                 ret = generateObjectFromSet(mRandom, mObjectSet);
             } else if(mClazzSet != null && mClazzSet.size() > 0){
-                ret = generateObjectOfClasses(mRandom, mClazzSet);
+                ret = generateObjectOfClasses(mRandom, mClazzSet, level);
             } else {
                 //TODO find all the subclass of the interface and pick one to give the object
-                ret = generateObjectOfClasses(mRandom, mSubClassStore.getSubClasses(mClazz));
+                ret = generateObjectOfClasses(mRandom, mSubClassStore.getSubClasses(mClazz), level);
             }
         }
         return ret;
     }
 
-    protected T generateObjectOfClasses(Random random, List<Class<? extends T>> classes){
+    @SuppressWarnings("unchecked")
+    protected T generateObjectOfClasses(Random random, List<Class<? extends T>> classes, int level){
         if(random == null || classes == null || classes.size() == 0){
             throw new IllegalArgumentException("Random cant be null and classes can't be empty");
         }
         Class<? extends T> clazz = classes.get(random.nextInt(classes.size()));
-        return getGenerator(clazz).generate();
+        IGenerator<? extends T> generator = getGenerator(clazz);
+        if(generator instanceof ClassGenerator){
+            return  ((ClassGenerator<? extends T>) generator).generate(level);
+        } else {
+            return generator.generate();
+        }
     }
 
     protected T generateObjectFromSet(Random random, List<T> objectSet){
@@ -125,16 +136,16 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
             this(clazz, null, null);
         }
 
-        protected Builder(Class<E> clazz, ITypeGeneratorFactory factory){
+        public Builder(Class<E> clazz, ITypeGeneratorFactory factory){
             this(clazz, factory, null);
         }
 
-        protected Builder(Class<E> clazz, SubClassStore subClassStore){
+        public Builder(Class<E> clazz, SubClassStore subClassStore){
             this(clazz, null, subClassStore);
         }
 
-        protected Builder(Class<E> clazz, ITypeGeneratorFactory factory, SubClassStore store){
-            clazz = clazz;
+        public Builder(Class<E> clazz, ITypeGeneratorFactory factory, SubClassStore store){
+            mClazz = clazz;
             mFactory = factory != null ? factory : TypeGeneratorFactory.getFactory();
             mSubClassStore = store != null ? store : SubClassStore.getInstance();
         }
@@ -166,7 +177,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
 
         public InterfaceOrAbstractClassGenerator<E> build(){
             InterfaceOrAbstractClassGenerator<E> generator = new InterfaceOrAbstractClassGenerator<>(mClazz, mFactory);
-            if((mObjectSet == null || mObjectSet.size() == 0) && (mClazzSet == null || mClazzSet.size() == 0)){
+            if((mObjectSet == null || mObjectSet.size() == 0) && (mClazzSet == null || mClazzSet.size() == 0) && (mSubClassStore.getSubClasses(mClazz) == null|| mSubClassStore.getSubClasses(mClazz).size() == 0)){
                 throw new NoInterfaceLimitationException();
             }
             generator.setClassSet(mClazzSet);
