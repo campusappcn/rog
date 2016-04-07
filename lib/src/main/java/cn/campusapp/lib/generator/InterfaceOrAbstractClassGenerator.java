@@ -21,7 +21,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
     private Class<T> mClazz;
     private List<T> mObjectSet;
     private List<Class<? extends T>> mClazzSet;
-    private float mScaleOfNull = 0.1f;
+    private float mProportionOfNull = 0.1f;
     private ITypeGeneratorFactory mFactory;
     private SubClassStore mSubClassStore;
     Random mRandom = new Random();
@@ -34,37 +34,60 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
         mFactory = factory;
     }
 
+    /**
+     * If this set settled, the object generated will be fetched from this set.
+     * @param objectSet
+     */
     public void setObjectSet(List<T> objectSet){
         mObjectSet = objectSet;
     }
 
+    /**
+     * If this set settled, the generator will generate objects of classes in the clazzSet
+     * @param clazzSet
+     */
     public void setClassSet(List<Class<? extends T>> clazzSet){
         mClazzSet = clazzSet;
     }
 
-    public void setClassGenerator(IGenerator generator){
+    /**
+     * set generator of the class(generator.getClassToGenerate()). When need to generate objects of
+     * this class, It will use this generator.
+     * @param generator
+     */
+    public void setTypeGenerator(IGenerator generator){
         mFactory.setGenerator(generator);
     }
 
 
+    /**
+     * The generator must be told the subclasses of the interfaces or abstract classes.
+     * And the SubClassStore consists this information.
+     * @param store
+     */
     public void setSubClassStore(SubClassStore store){
         mSubClassStore = store;
     }
 
+
     protected <E> IGenerator<E> getGenerator(Class<E> clazz){
         IGenerator<E> generator = mFactory.getGenerator(clazz);
         if(generator == null){
-            generator = new ClassGenerator.Builder<E>(clazz, mFactory, mSubClassStore).setScaleOfNull(mScaleOfNull).build();
-            setClassGenerator(generator);
+            generator = new ClassGenerator.Builder<E>(clazz, mFactory, mSubClassStore).setProportionOfNull(mProportionOfNull).build();
+            setTypeGenerator(generator);
         }
         return generator;
     }
 
-    public void setScaleOfNull(float scale){
-        if(scale < 0.0f || scale > 1.0f){
+    /**
+     * set proportion to generate null
+     * @param proportion
+     */
+    public void setProportionOfNull(float proportion){
+        if(proportion < 0.0f || proportion > 1.0f){
             throw new IllegalArgumentException("The scale must be in the bound of [0.0f, 1.0f]");
         }
-        mScaleOfNull = scale;
+        mProportionOfNull = proportion;
     }
 
 
@@ -76,7 +99,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
 
     public T generate(int level){
         T ret = null;
-        if(!isGenerateNull(mScaleOfNull)){
+        if(!isGenerateNull(mProportionOfNull)){
             if(mObjectSet != null && mObjectSet.size() > 0){
                 ret = generateObjectFromSet(mRandom, mObjectSet);
             } else if(mClazzSet != null && mClazzSet.size() > 0){
@@ -127,7 +150,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
         private Class<E> mClazz;
         private List<E> mObjectSet;
         private List<Class<? extends E>> mClazzSet;
-        private float mScaleOfNull = 0.1f;
+        private float mProportionOfNull = 0.1f;
         private ITypeGeneratorFactory mFactory;
         private SubClassStore mSubClassStore;
         Random mRandom = new Random();
@@ -150,28 +173,44 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
             mSubClassStore = store != null ? store : SubClassStore.getInstance();
         }
 
-
+        /**
+         * If this set settled, the object generated will be fetched from this set.
+         * @param objectSet
+         */
         public Builder<E> setObjectSet(List<E> objectSet){
             mObjectSet = objectSet;
             return this;
         }
 
+        /**
+         * If this set settled, the generator will generate objects of classes in the clazzSet
+         * @param clazzSet
+         */
         public Builder<E> setClassSet(List<Class<? extends E>> clazzSet){
             mClazzSet = clazzSet;
             return this;
         }
 
 
-        public Builder<E> setClassGenerator(IGenerator generator){
+        /**
+         * set generator of the class(generator.getClassToGenerate()). When need to generate objects of
+         * this class, It will use this generator.
+         * @param generator
+         */
+        public Builder<E> setTypeGenerator(IGenerator generator){
             mFactory.setGenerator(generator);
             return this;
         }
 
-        public Builder<E> setScaleOfNull(float scale){
-            if(scale < 0.0f || scale > 1.0f){
+        /**
+         * set proportion to generate null
+         * @param proportion in [0.0f, 1.0f]
+         */
+        public Builder<E> setScaleOfNull(float proportion){
+            if(proportion < 0.0f || proportion > 1.0f){
                 throw new IllegalArgumentException("The scale must be in the bound of [0.0f, 1.0f]");
             }
-            mScaleOfNull = scale;
+            mProportionOfNull = proportion;
             return this;
         }
 
@@ -182,7 +221,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
             }
             generator.setClassSet(mClazzSet);
             generator.setObjectSet(mObjectSet);
-            generator.setScaleOfNull(mScaleOfNull);
+            generator.setProportionOfNull(mProportionOfNull);
             generator.setSubClassStore(mSubClassStore);
             return generator;
         }

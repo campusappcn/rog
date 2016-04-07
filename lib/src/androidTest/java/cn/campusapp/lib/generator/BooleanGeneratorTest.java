@@ -39,14 +39,14 @@ public class BooleanGeneratorTest extends BaseUnitTest {
     @Test
     public void testSetScale(){
         IGenerator<Boolean> generator = new BooleanGenerator.Builder()
-                .setScale(0, 1)
+                .setProportion(0, 1)
                 .build();
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator.generate());
         }
 
         IGenerator<Boolean> generator1 = new BooleanGenerator.Builder()
-                .setScale(1, 0).build();
+                .setProportion(1, 0).build();
         for(int i=0;i<1000;i++){
             Assert.assertFalse(generator1.generate());
         }
@@ -54,7 +54,7 @@ public class BooleanGeneratorTest extends BaseUnitTest {
         boolean hasGenerateTrue = false;
 
         IGenerator<Boolean> generator2 = new BooleanGenerator.Builder()
-                .setScale(1, 1).build();
+                .setProportion(1, 1).build();
         for(int i=0;i<1000;i++){
             if(generator2.generate()){
                 hasGenerateTrue = true;

@@ -24,37 +24,62 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
     // if this set settled, the negative value will be gotten from this set
     protected List<T> mNegativeValueSet = new ArrayList<>();
 
-    //if this set settled, the value will be gotten from this set
+    //if this set settled, the value will be gotten from this set, mValueSet has higher priority than mPositiveValueSet and mNegativeValueSet
     protected List<T> mValueSet;
 
-    protected float mScaleGeneratePositive = 0.7f;
 
-    protected float mScaleGenerateNegative = 0.2f;
+    protected float mProportionGeneratePositive = 0.7f;
 
-    protected float mScaleGenerateZero = 0.1f;
+    protected float mProportionGenerateNegative = 0.2f;
+
+    protected float mProportionGenerateZero = 0.1f;
 
     protected Random mRandom = new Random();
 
+    /**
+     * set if the generator will generate negative values.
+     * @param generateNegative
+     */
     public void setGenerateNegative(boolean generateNegative){
         mGenerateNegative = generateNegative;
     }
 
+    /**
+     * set if the generator will generate zero
+     * @param generateZero
+     */
     public void setGenerateZero(boolean generateZero){
         mGenerateZero = generateZero;
     }
 
+    /**
+     * set if the generator will generate positive values
+     * @param generatePositive
+     */
     public void setGeneratePositive(boolean generatePositive){
         mGeneratePositive = generatePositive;
     }
 
+    /**
+     * set max bound of values generated
+     * @param maxBound
+     */
     public void setMaxBound(T maxBound){
         mMaxBound = maxBound;
     }
 
+    /**
+     * set min bound of values generated
+     * @param minBound
+     */
     public void setMinBound(T minBound){
         mMinBound = minBound;
     }
 
+    /**
+     * set positive value set, if this set settled, the positive value will be gotten from this set
+     * @param set
+     */
     public void setPositiveValueSet(List<T> set){
         if(set != null){
             for(T t : set){
@@ -65,6 +90,10 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
         }
     }
 
+    /**
+     * set negative value set, if this set settled, the negative value will be gotten from this set
+     * @param set
+     */
     public void setNegativeValueSet(List<T> set){
         if(set != null){
             for(T t : set){
@@ -75,25 +104,29 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
         }
     }
 
+    /**
+     * if this set settled, the value will be gotten from this set, mValueSet has higher priority than mPositiveValueSet and mNegativeValueSet
+     * @param set
+     */
     public void setValueSet(List<T> set){
         mValueSet = set;
     }
 
     /**
-     * the scale to generate positive, zero, negative value, the default is 7:1:2
-     * @param positiveScale
-     * @param zeroScale
-     * @param negativeScale
+     * the proportion to generate positive, zero, negative value, the default is 7:1:2
+     * @param proportionOfPositive
+     * @param proportionOfZero
+     * @param proportionOfNegative
      */
-    public void setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-        if(positiveScale == 0 && zeroScale == 0 && negativeScale == 0){
+    public void setProportion(int proportionOfPositive, int proportionOfZero, int proportionOfNegative){
+        if(proportionOfPositive == 0 && proportionOfZero == 0 && proportionOfNegative == 0){
             throw new IllegalArgumentException("The three scale can't be all zero");
-        } else if(positiveScale < 0 || zeroScale < 0 || negativeScale < 0){
+        } else if(proportionOfPositive < 0 || proportionOfZero < 0 || proportionOfNegative < 0){
             throw new IllegalArgumentException("Scale can't be negative");
         }
-        mScaleGenerateNegative = 1.0f * negativeScale / (positiveScale + zeroScale + negativeScale);
-        mScaleGeneratePositive = 1.0f * positiveScale / (positiveScale + zeroScale + negativeScale);
-        mScaleGenerateZero = 1.0f * zeroScale / (positiveScale + zeroScale + negativeScale);
+        mProportionGenerateNegative = 1.0f * proportionOfNegative / (proportionOfPositive + proportionOfZero + proportionOfNegative);
+        mProportionGeneratePositive = 1.0f * proportionOfPositive / (proportionOfPositive + proportionOfZero + proportionOfNegative);
+        mProportionGenerateZero = 1.0f * proportionOfZero / (proportionOfPositive + proportionOfZero + proportionOfNegative);
     }
 
 
@@ -110,17 +143,17 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
 
     private T generateRandom(){
         //value bounds and is generate influence the scale
-        float negativeScale = mGenerateNegative && (smaller(mMinBound, getZero())) ? mScaleGenerateNegative : 0;
-        float positiveScale = mGeneratePositive && (larger(mMaxBound, getZero()))? mScaleGeneratePositive : 0;
-        float zeroScale = mGenerateZero && (smallerOrEqual(mMinBound, getZero())) && (largerOrEqual(mMaxBound, getZero())) ? mScaleGenerateZero : 0;
-        if(negativeScale == 0 && positiveScale == 0 && zeroScale == 0){
+        float negativeProportion = mGenerateNegative && (smaller(mMinBound, getZero())) ? mProportionGenerateNegative : 0;
+        float positiveProportion = mGeneratePositive && (larger(mMaxBound, getZero()))? mProportionGeneratePositive : 0;
+        float zeroProportion = mGenerateZero && (smallerOrEqual(mMinBound, getZero())) && (largerOrEqual(mMaxBound, getZero())) ? mProportionGenerateZero : 0;
+        if(negativeProportion == 0 && positiveProportion == 0 && zeroProportion == 0){
             throw new RuntimeException("The negative scale, positive scale and zero scale can't be all zero");
         }
-        negativeScale = negativeScale / (negativeScale + positiveScale + zeroScale);
-        positiveScale = positiveScale / (negativeScale + positiveScale + zeroScale);
-        zeroScale = zeroScale / (negativeScale + positiveScale + zeroScale);
+        negativeProportion = negativeProportion / (negativeProportion + positiveProportion + zeroProportion);
+        positiveProportion = positiveProportion / (negativeProportion + positiveProportion + zeroProportion);
+        zeroProportion = zeroProportion / (negativeProportion + positiveProportion + zeroProportion);
 
-        int type = getGenerateNumberType(negativeScale, zeroScale, positiveScale);
+        int type = getGenerateNumberType(negativeProportion, zeroProportion, positiveProportion);
         if(type == -1){
             //generate a negative value
             if(largerOrEqual(mMinBound, getZero())){
@@ -200,14 +233,11 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
      * the integer type
      * @return -1 negative 0 zero  1 positive
      */
-    private int getGenerateNumberType(float negativeScale, float zeroScale, float positiveScale){
-        int negativeUp = (int) (100 * negativeScale);
-        int zeroScaleUp = negativeUp + (int) (100 * zeroScale);
-        int positiveScaleUp = zeroScaleUp + (int) (100 * positiveScale);
-        int r = mRandom.nextInt(positiveScaleUp);
-        if(r < negativeUp){
+    private int getGenerateNumberType(float negativeProportion, float zeroProportion, float positiveProportion){
+        float r = mRandom.nextFloat();
+        if(r < negativeProportion){
             return -1;
-        } else if(r < zeroScaleUp){
+        } else if(r < negativeProportion + zeroProportion){
             return 0;
         } else{
             return 1;
@@ -235,11 +265,11 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
         //if this set settled, the value will be gotten from this set
         protected List<T> mValueSet;
 
-        protected int mScaleOfPositive = -1;
+        protected int mProportionOfPositive = -1;
 
-        protected int mScaleOfNegative = -1;
+        protected int mProportionOfNegative = -1;
 
-        protected int mScaleOfZero = -1;
+        protected int mProportionOfZero = -1;
 
 
         public NumberBuilder(){
@@ -251,41 +281,73 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
 
         protected abstract T getDefaultMinValue();
 
+        /**
+         * set if the generator will generate negative values.
+         * @param generateNegative
+         */
         public NumberBuilder setGenerateNegative(boolean generateNegative){
             mGenerateNegative = generateNegative;
             return this;
         }
 
+        /**
+         * set if the generator will generate zero
+         * @param generateZero
+         */
         public NumberBuilder setGenerateZero(boolean generateZero){
             mGenerateZero = generateZero;
             return this;
         }
 
+        /**
+         * set if the generator will generate positive values
+         * @param generatePositive
+         */
         public NumberBuilder setGeneratePositive(boolean generatePositive){
             mGeneratePositive = generatePositive;
             return this;
         }
 
+        /**
+         * set max bound of values generated
+         * @param maxBound
+         */
         public NumberBuilder setMaxBound(T maxBound){
             mMaxBound = maxBound;
             return this;
         }
 
+        /**
+         * set min bound of values generated
+         * @param minBound
+         */
         public NumberBuilder setMinBound(T minBound){
             mMinBound = minBound;
             return this;
         }
 
+        /**
+         * set positive value set, if this set settled, the positive value will be gotten from this set
+         * @param set
+         */
         public NumberBuilder setPositiveValueSet(List<T> set){
             mPositiveValueSet = set;
             return this;
         }
 
+        /**
+         * set negative value set, if this set settled, the negative value will be gotten from this set
+         * @param set
+         */
         public NumberBuilder setNegativeValueSet(List<T> set){
             mNegativeValueSet = set;
             return this;
         }
 
+        /**
+         * if this set settled, the value will be gotten from this set, mValueSet has higher priority than mPositiveValueSet and mNegativeValueSet
+         * @param set
+         */
         public NumberBuilder setValueSet(List<T> set){
             mValueSet = set;
             return this;
@@ -298,9 +360,9 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
          * @param negativeScale
          */
         public NumberBuilder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            mScaleOfNegative = negativeScale;
-            mScaleOfZero = zeroScale;
-            mScaleOfPositive = positiveScale;
+            mProportionOfNegative = negativeScale;
+            mProportionOfZero = zeroScale;
+            mProportionOfPositive = positiveScale;
             return this;
         }
 
@@ -324,8 +386,8 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
             generator.setPositiveValueSet(mPositiveValueSet);
             generator.setNegativeValueSet(mNegativeValueSet);
             generator.setValueSet(mValueSet);
-            if(mScaleOfPositive >=0 && mScaleOfZero >= 0 && mScaleOfNegative >= 0 && (mScaleOfPositive + mScaleOfZero + mScaleOfNegative) > 0) {
-                generator.setGenerateScale(mScaleOfPositive, mScaleOfZero, mScaleOfNegative);
+            if(mProportionOfPositive >=0 && mProportionOfZero >= 0 && mProportionOfNegative >= 0 && (mProportionOfPositive + mProportionOfZero + mProportionOfNegative) > 0) {
+                generator.setProportion(mProportionOfPositive, mProportionOfZero, mProportionOfNegative);
             }
             return generator;
         }

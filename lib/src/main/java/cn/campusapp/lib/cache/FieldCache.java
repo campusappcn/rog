@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * Created by kris on 16/3/30.
+ * used to cache field lists of class.
  */
 public enum FieldCache {
     INSTANCE;

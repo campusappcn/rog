@@ -19,6 +19,12 @@ public class SubClassStore {
         return new SubClassStore();
     }
 
+    /**
+     * set the map from a interface or abstract class to his subclasses
+     * @param clazz should be a interface or abstract class.
+     * @param classSet subclasses
+     * @param <T>
+     */
     public <T> void setInterfaceOrAbstractMap(Class<T> clazz, List<Class<? extends T>> classSet){
         if(clazz == null || classSet == null || classSet.size() == 0){
             Timber.e("clazz or classSet can't empty");

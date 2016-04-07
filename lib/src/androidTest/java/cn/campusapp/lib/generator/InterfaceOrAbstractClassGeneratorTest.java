@@ -63,7 +63,7 @@ public class InterfaceOrAbstractClassGeneratorTest extends BaseUnitTest{
         classes.add(TestInterfaceClass.class);
         InterfaceOrAbstractClassGenerator<TestInterface> generator = new InterfaceOrAbstractClassGenerator.Builder<>(TestInterface.class)
                 .setClassSet(classes)
-                .setClassGenerator(new TestInferfaceClassGenerator())
+                .setTypeGenerator(new TestInferfaceClassGenerator())
                 .build();
         for(int i=0;i<1000;i++){
             TestInterface object = generator.generate();
@@ -81,19 +81,19 @@ public class InterfaceOrAbstractClassGeneratorTest extends BaseUnitTest{
                 .setClassSet(classes)
                 .build();
 
-        generator.setScaleOfNull(0);
+        generator.setProportionOfNull(0);
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator.generate() != null);
         }
 
-        generator.setScaleOfNull(1);
+        generator.setProportionOfNull(1);
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator.generate() == null);
         }
 
         boolean hasGenerateNull = false;
         boolean hasGenerateNotNull = false;
-        generator.setScaleOfNull(0.5f);
+        generator.setProportionOfNull(0.5f);
         for(int i=0;i<1000;i++){
             TestInterface object = generator.generate();
             if(object == null){

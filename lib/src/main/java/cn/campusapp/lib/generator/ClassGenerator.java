@@ -21,10 +21,10 @@ import timber.log.Timber;
 public class ClassGenerator<T> implements IGenerator<T>{
     private static int STRATEGY_STRICT = 0;  //strict,
     private static int STRATEGY_LAX = 1;
-    private static int mMaxLevel = 5;
+    private static int mMaxLayer = 5;
     private Class<T> mClazz;
     private ITypeGeneratorFactory mGeneratorFactory;
-    private float mScaleOfNull = 0.1f;  //the scale of the generator generate null;
+    private float mProportionOfNull = 0.1f;  //the scale of the generator generate null;
     private SubClassStore mStore;
     private int mStrategy = STRATEGY_STRICT;
     Random mRandom = new Random();
@@ -38,13 +38,25 @@ public class ClassGenerator<T> implements IGenerator<T>{
         mGeneratorFactory = factory;
     }
 
+    /**
+     * set generator of type (generator.getClassToGenerate()). It will use the generator to generate
+     * objects of this type afterwards.
+     * @param generator
+     */
     public void setTypeGenerator(IGenerator generator){
         mGeneratorFactory.setGenerator(generator);
     }
 
-    public void setMaxLevel(int maxLevel){
-        mMaxLevel = maxLevel;
+    /**
+     * set the max layer of classes referencing tree. For example, Class1 references Class2, Class1's layer is 1 and Class2's layer is 1.
+     * If max layer is 1. Then Class2 can't generate any more object except primitive type and its field of class types will be null.
+     * @param maxLayer
+     * @return
+     */
+    public void setMaxLayer(int maxLayer){
+        mMaxLayer = maxLayer;
     }
+
 
     protected <E> IGenerator<E> getGenerator(Class<E> clazz){
         IGenerator<E> generator = mGeneratorFactory.getGenerator(clazz);
@@ -62,39 +74,53 @@ public class ClassGenerator<T> implements IGenerator<T>{
         IGenerator<E> generator = null;
         if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())){
             generator = new InterfaceOrAbstractClassGenerator.Builder<E>(clazz, mGeneratorFactory, mStore)
-                    .setScaleOfNull(mScaleOfNull)
+                    .setScaleOfNull(mProportionOfNull)
                     .build();
         } else if(clazz.isEnum()){
             generator = new EnumGenerator.Builder<>(clazz)
-                    .setScaleOfNull(mScaleOfNull)
+                    .setProportionOfNull(mProportionOfNull)
                     .build();
         } else if(clazz.isArray()){
             generator = (IGenerator<E>) new ArrayGenerator
                     .Builder<>((Class<Object[]>) clazz)
-                    .setScaleOfNull(mScaleOfNull)
+                    .setProportionOfNull(mProportionOfNull)
                     .setGenerator(getGenerator(clazz.getComponentType()))
                     .build();
         } else {
             generator = new ClassGenerator.Builder<>(clazz, mGeneratorFactory, mStore)
-                    .setScaleOfNull(mScaleOfNull)
+                    .setProportionOfNull(mProportionOfNull)
                     .setStrategy(mStrategy)
-                    .setMaxLevel(mMaxLevel)
+                    .setMaxLevel(mMaxLayer)
                     .build();
         }
         return generator;
     }
 
-    public void setScaleOfNull(float scale){
-        if(scale < 0.0f || scale > 1.0f){
+    /**
+     * set proportion to generate null
+     * @param proportion
+     */
+    public void setProportionOfNull(float proportion){
+        if(proportion < 0.0f || proportion > 1.0f){
             throw new IllegalArgumentException("The scale of null must be in the bounds of [0.0f, 1.0f]");
         }
-        mScaleOfNull = scale;
+        mProportionOfNull = proportion;
     }
 
+    /**
+     * If the class has field of interfaces or abstract classes. The generator must be told the subclasses of the interfaces or abstract classes.
+     * And the SubClassStore consists this information.
+     * @param store
+     */
     public void setSubClassStore(SubClassStore store){
         mStore = store;
     }
 
+    /**
+     * @deprecated don't make effect yet.
+     * @param strategy
+     */
+    @Deprecated
     public void setStrategy(int strategy){
         mStrategy = strategy;
     }
@@ -115,7 +141,7 @@ public class ClassGenerator<T> implements IGenerator<T>{
             if(generator != null && ! (generator instanceof ClassGenerator)){
                 return generator.generate();
             } else {
-                if(isGenerateNull(mScaleOfNull)){
+                if(isGenerateNull(mProportionOfNull)){
                     return null;
                 } else {
                     T object = getNewClassInstance(mClazz);
@@ -143,7 +169,7 @@ public class ClassGenerator<T> implements IGenerator<T>{
                 try {
                     f.setAccessible(true);
                     Object value = null;
-                    if(level < mMaxLevel) {
+                    if(level < mMaxLayer) {
                         IGenerator<?> generator = getGenerator(f.getType());
                         if(generator instanceof ClassGenerator){
                             value = ((ClassGenerator) generator).generate(++level);
@@ -185,7 +211,7 @@ public class ClassGenerator<T> implements IGenerator<T>{
                 fields.addAll(Arrays.asList(tempClass.getDeclaredFields()));
                 tempClass = tempClass.getSuperclass();
                 level ++;
-            } while (tempClass != null && tempClass != Object.class && level <= mMaxLevel);
+            } while (tempClass != null && tempClass != Object.class && level <= mMaxLayer);
             FieldCache.cache(clazz, fields);
         }
 
@@ -219,10 +245,10 @@ public class ClassGenerator<T> implements IGenerator<T>{
     public static class Builder<E>{
         private Class<E> mClazz;
         private ITypeGeneratorFactory mGeneratorFactory;
-        private float mScaleOfNull = 0.1f;  //the scale of the generator generate null;
+        private float mProportionOfNull = 0.1f;  //the scale of the generator generate null;
         private SubClassStore mSubClassStore;
         private int mStrategy = STRATEGY_LAX;
-        private int mMaxLevel = -1;
+        private int mMaxLayer = -1;
 
         public Builder(Class<E> clazz){
             this(clazz, null, null);
@@ -244,7 +270,8 @@ public class ClassGenerator<T> implements IGenerator<T>{
 
 
         /**
-         *  if the generator is a instance of ClassGenerator, it may not make effect. So implement a IGenerator yourself.
+         * Set generator of type (generator.getClassToGenerate()). It will use the generator to generate objects of this type afterwards.
+         * If the generator is a instance of ClassGenerator, it may not make effect. So implement a IGenerator yourself.
          * @param generator
          * @return
          */
@@ -253,16 +280,29 @@ public class ClassGenerator<T> implements IGenerator<T>{
             return this;
         }
 
+        /**
+         * set subClasses of clazz. When the generator needs to generate this interface or abstract class, it will
+         * generate object of one of the classes in the subClass set.
+         * @param clazz should be a interface or abstract class.
+         * @param subClasses
+         * @param <S>
+         * @return
+         */
         public <S> Builder<E> setSubClass(Class<S> clazz, List<Class<? extends S>> subClasses){
             mSubClassStore.setInterfaceOrAbstractMap(clazz, subClasses);
             return this;
         }
 
-        public Builder<E> setScaleOfNull(float scale){
-            if(scale < 0.0f || scale > 1.0f){
-                throw new IllegalArgumentException("The scale of null must be in the bounds of [0.0f, 1.0f]");
+
+        /**
+         * set proportion to generate null
+         * @param proportion
+         */
+        public Builder<E> setProportionOfNull(float proportion){
+            if(proportion < 0.0f || proportion > 1.0f){
+                throw new IllegalArgumentException("The proportion of null must be in the bounds of [0.0f, 1.0f]");
             }
-            mScaleOfNull = scale;
+            mProportionOfNull = proportion;
             return this;
         }
 
@@ -277,23 +317,23 @@ public class ClassGenerator<T> implements IGenerator<T>{
         }
 
         /**
-         * set the max level of the object reference. For example, Class1 reference2 Class2.
-         * the Class2's level is 1. if Max Level is 1. Then Class2's can't generate any more object except primitive type.
-         * @param level
+         * set the max layer of classes referencing tree. For example, Class1 references Class2, Class1's layer is 1 and Class2's layer is 1.
+         * If max layer is 1. Then Class2 can't generate any more object except primitive type and its field of class types will be null.
+         * @param maxLayer
          * @return
          */
-        public Builder<E> setMaxLevel(int level){
-            mMaxLevel = level;
+        public Builder<E> setMaxLevel(int maxLayer){
+            mMaxLayer = maxLayer;
             return this;
         }
 
         public ClassGenerator<E> build(){
             ClassGenerator<E> generator = new ClassGenerator<>(mClazz, mGeneratorFactory);
-            generator.setScaleOfNull(mScaleOfNull);
+            generator.setProportionOfNull(mProportionOfNull);
             generator.setSubClassStore(mSubClassStore);
             generator.setStrategy(mStrategy);
-            if(mMaxLevel >= 0){
-                generator.setMaxLevel(mMaxLevel);
+            if(mMaxLayer >= 0){
+                generator.setMaxLayer(mMaxLayer);
             }
             return generator;
         }

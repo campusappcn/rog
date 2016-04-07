@@ -34,6 +34,10 @@ public class TypeGeneratorFactory implements ITypeGeneratorFactory{
         }
     }
 
+    /**
+     * set generator of this class type (generator.getClassToGenerate())
+     * @param generator
+     */
     @Override
     public void setGenerator(IGenerator generator){
         if(generator.getClassToGenerate() == null){

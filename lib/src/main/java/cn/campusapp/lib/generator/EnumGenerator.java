@@ -12,7 +12,7 @@ public class EnumGenerator<E> implements IGenerator<E> {
 
     private List<E> mValueSet;
     private Class<E> mClazz;
-    private float mScaleOfNull = 0.1f;  //the scale of this generator generating null value
+    private float mProportionOfNull = 0.1f;  //the scale of this generator generating null value
 
 
     private Random mRandom = new Random();
@@ -21,17 +21,25 @@ public class EnumGenerator<E> implements IGenerator<E> {
         mClazz = clazz;
     }
 
+    /**
+     * if the value set settled, the values generated will be fetched from this set.
+     * @param values
+     */
     public void setValueSet(List<E> values){
         mValueSet = values;
     }
 
-    public void setScaleOfNull(float scale){
-        mScaleOfNull = scale;
+    /**
+     * set proportion to generate null of this generator
+     * @param proportion
+     */
+    public void setProportionOfNull(float proportion){
+        mProportionOfNull = proportion;
     }
 
     @Override
     public E generate() {
-        if(isGenerateNull(mScaleOfNull)){
+        if(isGenerateNull(mProportionOfNull)){
             return null;
         } else {
             if (mValueSet != null && mValueSet.size() != 0) {
@@ -48,12 +56,12 @@ public class EnumGenerator<E> implements IGenerator<E> {
     }
 
 
-    private boolean isGenerateNull(float scaleOfNull){
-        if(scaleOfNull <0.0f || scaleOfNull >1.0f){
+    private boolean isGenerateNull(float proportionOfNull){
+        if(proportionOfNull <0.0f || proportionOfNull >1.0f){
             throw new IllegalArgumentException("The scale must in the bound of [0.0f, 1.0f]");
         }
         float r = mRandom.nextFloat();
-        return r< scaleOfNull;
+        return r< proportionOfNull;
     }
 
     /**
@@ -88,7 +96,7 @@ public class EnumGenerator<E> implements IGenerator<E> {
     public static class Builder<T> {
         private List<T> mValueSet;
         private Class<T> mClazz;
-        private float mScaleOfNull = 0.1f;
+        private float mProportionOfNull = 0.1f;
         public Builder(Class<T> clazz){
             if(!clazz.isEnum()){
                 throw new IllegalArgumentException("The class must be enum");
@@ -96,19 +104,24 @@ public class EnumGenerator<E> implements IGenerator<E> {
             mClazz = clazz;
         }
 
+        /**
+         * if the value set settled, the values generated will be fetched from this set.
+         * @param values
+         */
         public Builder<T> setValueSet(List<T> values){
             mValueSet = values;
             return this;
         }
 
         /**
-         * @param scale must [0.0f, 1.0f]
+         * set proportion to generate null of this generator
+         * @param proportion must [0.0f, 1.0f]
          */
-        public Builder<T> setScaleOfNull(float scale){
-            if(scale <0.0f || scale >1.0f){
+        public Builder<T> setProportionOfNull(float proportion){
+            if(proportion <0.0f || proportion >1.0f){
                 throw new IllegalArgumentException("The scale must in the bound of [0.0f, 1.0f]");
             }
-            mScaleOfNull = scale;
+            mProportionOfNull = proportion;
             return this;
         }
 
@@ -117,7 +130,7 @@ public class EnumGenerator<E> implements IGenerator<E> {
             if(mValueSet != null && mValueSet.size() != 0){
                 generator.setValueSet(mValueSet);
             }
-            generator.setScaleOfNull(mScaleOfNull);
+            generator.setProportionOfNull(mProportionOfNull);
             return generator;
         }
 

@@ -58,7 +58,7 @@ public class ByteGenerator extends NumberGenerator<Byte> {
     protected int compare(Byte value1, Byte value2) {
         if(value1 > value2){
             return 1;
-        } else if(value1 == value2) {
+        } else if(value1.equals(value2)) {
             return 0;
         } else {
             return -1;
@@ -125,12 +125,7 @@ public class ByteGenerator extends NumberGenerator<Byte> {
             return (Builder) super.setValueSet(set);
         }
 
-        /**
-         * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
-         */
+
         public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
             return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
         }

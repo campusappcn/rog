@@ -13,8 +13,8 @@ import java.util.Random;
 public class CharGenerator implements IGenerator<Character>{
 
 
-    private char mMaxValue = Character.MAX_VALUE;
-    private char mMinValue = Character.MIN_VALUE;
+    private char mMaxBound = Character.MAX_VALUE;
+    private char mMinBound = Character.MIN_VALUE;
 
     private List<Character> mValueSet;
 
@@ -23,14 +23,26 @@ public class CharGenerator implements IGenerator<Character>{
 
     protected CharGenerator(){}
 
-    public void setMaxValue(char maxValue){
-        mMaxValue = maxValue;
+    /**
+     * set up bound of values generated
+     * @param maxBound
+     */
+    public void setMaxBound(char maxBound){
+        mMaxBound = maxBound;
     }
 
-    public void setMinValue(char minValue){
-        mMinValue = minValue;
+    /**
+     * set low bound of values genrated
+     * @param minBound
+     */
+    public void setMinBound(char minBound){
+        mMinBound = minBound;
     }
 
+    /**
+     * if the value set settled, the values generated will be gotton from this set.
+     * @param valueSet
+     */
     public void setValueSet(List<Character> valueSet){
         mValueSet = valueSet;
     }
@@ -41,7 +53,7 @@ public class CharGenerator implements IGenerator<Character>{
         if(mValueSet != null && mValueSet.size() > 0){
             return generateCharFromValueSet(mValueSet);
         } else {
-            return (char) generateIntValueInBounds(mMaxValue, mMinValue);
+            return (char) generateIntValueInBounds(mMaxBound, mMinBound);
         }
     }
 
@@ -65,21 +77,33 @@ public class CharGenerator implements IGenerator<Character>{
     }
 
     public static class Builder{
-        private char mMaxValue = Character.MAX_VALUE;
-        private char mMinValue = Character.MIN_VALUE;
+        private char mMaxBound = Character.MAX_VALUE;
+        private char mMinBound = Character.MIN_VALUE;
 
         private List<Character> mValueSet;
 
-        public Builder setMaxValue(char maxValue){
-            mMaxValue = maxValue;
+        /**
+         * set up bound of values generated
+         * @param maxBound
+         */
+        public Builder setMaxBound(char maxBound){
+            mMaxBound = maxBound;
             return this;
         }
 
-        public Builder setMinValue(char minValue){
-            mMinValue = minValue;
+        /**
+         * set low bound of values genrated
+         * @param minBound
+         */
+        public Builder setMinValue(char minBound){
+            mMinBound = minBound;
             return this;
         }
 
+        /**
+         * if the value set settled, the values generated will be gotton from this set.
+         * @param valueSet
+         */
         public Builder setValueSet(List<Character> valueSet){
             mValueSet = valueSet;
             return this;
@@ -87,11 +111,11 @@ public class CharGenerator implements IGenerator<Character>{
 
         public CharGenerator build(){
             CharGenerator generator = new CharGenerator();
-            if(mMinValue > mMaxValue){
-                throw new IllegalArgumentException("Min value can't larger than max value");
+            if(mMinBound > mMaxBound){
+                throw new IllegalArgumentException("Min bound can't larger than max bound");
             }
-            generator.setMaxValue(mMaxValue);
-            generator.setMinValue(mMinValue);
+            generator.setMaxBound(mMaxBound);
+            generator.setMinBound(mMinBound);
             if(mValueSet != null && mValueSet.size() > 0){
                 generator.setValueSet(mValueSet);
             }

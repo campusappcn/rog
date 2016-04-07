@@ -74,7 +74,7 @@ public class ClassGeneratorTest extends BaseUnitTest{
         }
 
         ClassGenerator<TestClass4> generator1 = new ClassGenerator.Builder<>(TestClass4.class)
-                .setScaleOfNull(0)
+                .setProportionOfNull(0)
                 .setSubClass(TestInterface.class, subClasses)
                 .build();
 
@@ -87,7 +87,7 @@ public class ClassGeneratorTest extends BaseUnitTest{
     @Test
     public void testSetScaleOfNull(){
         ClassGenerator<TestClass2> generator = new ClassGenerator.Builder<>(TestClass2.class)
-                .setScaleOfNull(0)
+                .setProportionOfNull(0)
                 .build();
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator.generate() != null);
@@ -95,7 +95,7 @@ public class ClassGeneratorTest extends BaseUnitTest{
 
 
         ClassGenerator<TestClass2> generator1 = new ClassGenerator.Builder<>(TestClass2.class)
-                .setScaleOfNull(1)
+                .setProportionOfNull(1)
                 .build();
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator1.generate() == null);
@@ -106,7 +106,7 @@ public class ClassGeneratorTest extends BaseUnitTest{
         boolean hasGenerateNotNull = false;
         boolean hasGenerateNull = false;
         ClassGenerator<TestClass2> generator2 = new ClassGenerator.Builder<>(TestClass2.class)
-                .setScaleOfNull(0.5f)
+                .setProportionOfNull(0.5f)
                 .build();
         for(int i=0;i<1000;i++){
             TestClass2 generated = generator2.generate();
@@ -122,12 +122,12 @@ public class ClassGeneratorTest extends BaseUnitTest{
     @Test
     public void testSetMaxLevel(){
         ClassGenerator<TestClass3> generator = new ClassGenerator.Builder<>(TestClass3.class)
-                .setScaleOfNull(0)
+                .setProportionOfNull(0)
             .build();
         Random random = new Random();
         for(int i=0;i<10;i++){
             int maxLevel = random.nextInt(5);
-            generator.setMaxLevel(maxLevel);
+            generator.setMaxLayer(maxLevel);
             TestClass3 object = generator.generate();
             for(int j=0;j<=maxLevel;j++){
                 object = object.clazz;

@@ -7,41 +7,55 @@ import java.util.Random;
  */
 public class BooleanGenerator implements IGenerator<Boolean>{
 
-    protected boolean mIsGenerateFalse = true;
-    protected boolean mIsGenerateTrue = true;
+    protected boolean mGenerateFalse = true;
+    protected boolean mGenerateTrue = true;
 
-    protected float mScaleOfFalse = 0.5f;
-    protected float mScaleOfTrue = 0.5f;
+    protected float mProportionOfFalse = 0.5f;
+    protected float mProportionOfTrue = 0.5f;
 
     Random mRandom = new Random();
 
     protected BooleanGenerator(){}
 
+    /**
+     * set if the generator will generate false
+     * @param generateFalse  true: will generate false, false: wont generate false
+     */
     public void setGenerateFalse(boolean generateFalse){
-        mIsGenerateFalse = generateFalse;
+        mGenerateFalse = generateFalse;
     }
 
+
+    /**
+     * set if the generator will generate true
+     * @param generateTrue true: will generate true, false: wont generate true
+     */
     public void setGenerateTrue(boolean generateTrue){
-        mIsGenerateTrue = generateTrue;
+        mGenerateTrue = generateTrue;
     }
 
-    public void setScale(int scaleOfFalse, int scaleOfTrue){
-        if(scaleOfFalse == 0 && scaleOfTrue == 0){
+    /**
+     * set the proportion of generating true and false
+     * @param proportionOfFalse should be in [0, n)
+     * @param proportionOfTrue  should be in [0, n)
+     */
+    public void setProportion(int proportionOfFalse, int proportionOfTrue){
+        if(proportionOfFalse == 0 && proportionOfTrue == 0){
             throw new IllegalArgumentException("Scale of true and false can't be all zero");
-        } else if(scaleOfFalse < 0 || scaleOfTrue < 0){
+        } else if(proportionOfFalse < 0 || proportionOfTrue < 0){
             throw new IllegalArgumentException("Scale of true and false can't be negative");
         }
-        int scaleTotal = scaleOfFalse + scaleOfTrue;
-        mScaleOfFalse = 1.0f * scaleOfFalse / scaleTotal;
-        mScaleOfTrue = 1.0f * scaleOfTrue / scaleTotal;
+        int scaleTotal = proportionOfFalse + proportionOfTrue;
+        mProportionOfFalse = 1.0f * proportionOfFalse / scaleTotal;
+        mProportionOfTrue = 1.0f * proportionOfTrue / scaleTotal;
     }
 
     @Override
     public Boolean generate() {
-        float scaleOfFalse = mIsGenerateFalse ? mScaleOfFalse : 0;
-        float scaleOfTrue = mIsGenerateTrue ? mScaleOfTrue : 0;
+        float proportionOfFalse = mGenerateFalse ? mProportionOfFalse : 0;
+        float proportionOfTrue = mGenerateTrue ? mProportionOfTrue : 0;
 
-        return getTrueOrFalse(scaleOfFalse, scaleOfTrue);
+        return getTrueOrFalse(proportionOfFalse, proportionOfTrue);
     }
 
     @Override
@@ -50,42 +64,58 @@ public class BooleanGenerator implements IGenerator<Boolean>{
     }
 
     /**
-     * decide if the return value is false or true according to the scale
+     * decide if the return value is false or true according to the proportion
      * @return
      */
-    private boolean getTrueOrFalse(float scaleOfFalse, float scaleOfTrue){
-        int falseUp = (int) (100 * scaleOfFalse);
-        int trueUp = falseUp + (int)(100 * scaleOfTrue);
-        int r = mRandom.nextInt(trueUp);
-        return r >= falseUp;
+    private boolean getTrueOrFalse(float proportionOfFalse, float proportionOfTrue){
+        float r = mRandom.nextFloat();
+        return r >= proportionOfFalse;
     }
 
 
     public static class Builder{
 
-        protected boolean mIsGenerateFalse = true;
-        protected boolean mIsGenerateTrue = true;
+        protected boolean mGenerateFalse = true;
+        protected boolean mGenerateTrue = true;
 
-        protected int mScaleOfFalse = -1;
-        protected int mScaleOfTrue = -1;
+        protected int mProportionOfFalse = -1;
+        protected int mProportionOfTrue = -1;
 
         public Builder(){
-
         }
 
+        /**
+         * set if the generator will generate false
+         * @param generateFalse  true: will generate false, false: wont generate false
+         */
         public Builder setGenerateFalse(boolean generateFalse){
-            mIsGenerateFalse = generateFalse;
+            mGenerateFalse = generateFalse;
             return this;
         }
 
+
+
+        /**
+         * set if the generator will generate true
+         * @param generateTrue true: will generate true, false: wont generate true
+         */
         public Builder setGenerateTrue(boolean generateTrue){
-            mIsGenerateTrue = generateTrue;
+            mGenerateTrue = generateTrue;
             return this;
         }
 
-        public Builder setScale(int scaleOfFalse, int scaleOfTrue){
-            mScaleOfFalse = scaleOfFalse;
-            mScaleOfTrue = scaleOfTrue;
+
+        /**
+         * set the proportion of generating true and false
+         * @param proportionOfFalse should be in [0, n)
+         * @param proportionOfTrue  should be in [0, n)
+         */
+        public Builder setProportion(int proportionOfFalse, int proportionOfTrue){
+            if(proportionOfFalse < 0 || proportionOfTrue < 0 || proportionOfFalse + proportionOfTrue <= 0){
+                throw new IllegalArgumentException("The proportionOfFalse and proportionOfTrue should be in bound of [0, n) and their sum should be in (0, n)");
+            }
+            mProportionOfFalse = proportionOfFalse;
+            mProportionOfTrue = proportionOfTrue;
             return this;
         }
 
@@ -93,15 +123,15 @@ public class BooleanGenerator implements IGenerator<Boolean>{
 
         public BooleanGenerator build(){
             BooleanGenerator generator = new BooleanGenerator();
-            if(!mIsGenerateFalse && !mIsGenerateTrue){
+            if(!mGenerateFalse && !mGenerateTrue){
                 throw new IllegalArgumentException("Generate false and true can't be all false");
             }
-            generator.setGenerateTrue(mIsGenerateTrue);
-            generator.setGenerateFalse(mIsGenerateFalse);
+            generator.setGenerateTrue(mGenerateTrue);
+            generator.setGenerateFalse(mGenerateFalse);
 
 
-            if(mScaleOfFalse >=0 && mScaleOfTrue >=0 && (mScaleOfTrue + mScaleOfFalse) > 0){
-                generator.setScale(mScaleOfFalse, mScaleOfTrue);
+            if(mProportionOfFalse >=0 && mProportionOfTrue >=0 && (mProportionOfTrue + mProportionOfFalse) > 0){
+                generator.setProportion(mProportionOfFalse, mProportionOfTrue);
             }
             return generator;
         }

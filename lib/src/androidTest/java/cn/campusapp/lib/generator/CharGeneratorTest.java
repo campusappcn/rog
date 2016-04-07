@@ -31,7 +31,7 @@ public class CharGeneratorTest extends BaseUnitTest{
     @Test
     public void testSetMaxValue(){
         CharGenerator generator = new CharGenerator.Builder()
-                .setMaxValue('A')
+                .setMaxBound('A')
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator.generate() <= 'A');

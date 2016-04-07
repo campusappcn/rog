@@ -14,23 +14,30 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
     Class<T[]> mClazz;
     Random mRandom = new Random();
     int mLength = -1; //if this field settled, the length of this array will be mLength
-    float mScaleOfNull = 0.1f;
+    float mProportionOfNull = 0.1f;
     int mMaxLength = 100;
     TypeGeneratorFactory mFactory = TypeGeneratorFactory.getFactory();
 
-
-
-    private ArrayGenerator(Class<T[]> clazz){
+    protected ArrayGenerator(Class<T[]> clazz){
         if(clazz == null){
             throw new IllegalArgumentException("clazz can't be null");
         }
         mClazz = clazz;
     }
 
+    /**
+     * if generator settled, it will use the generator to generate component in the array
+     *
+     * @param generator
+     */
     public void setGenerator(IGenerator<T> generator){
         mFactory.setGenerator(generator);
     }
 
+    /**
+     * set max length of array generated
+     * @param length
+     */
     public void setMaxLength(int length){
         if(mMaxLength <= 0){
             throw new IllegalArgumentException("Max Length must be larger than zero");
@@ -38,6 +45,11 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
         mMaxLength = length;
     }
 
+
+    /**
+     * set the length of array generated
+     * @param length
+     */
     public void setLength(int length){
         if(length<0){
             throw new IllegalArgumentException("length must larger than zero");
@@ -45,8 +57,13 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
         mLength = length;
     }
 
-    public void setScaleOfNull(float scale){
-        mScaleOfNull = scale;
+
+    /**
+     * set the proportion of null in the array
+     * @param proportion
+     */
+    public void setProportionOfNull(float proportion){
+        mProportionOfNull = proportion;
     }
 
     @SuppressWarnings("unchecked")
@@ -56,7 +73,7 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
         if(generator == null){
             generator = new ClassGenerator
                     .Builder<T>((Class<T>) mClazz.getComponentType())
-                    .setScaleOfNull(mScaleOfNull)
+                    .setProportionOfNull(mProportionOfNull)
                     .build();
             mFactory.setGenerator(generator);
         }
@@ -79,29 +96,48 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
         Class<E[]> mClazz;
         IGenerator<E> mGenerator;
         int mLength = -1; //if this field settled, the length of this array will be mLength
-        float mScaleOfNull = 0.1f;
+        float mProportionOfNull = 0.1f;
         int mMaxLength = 100;
 
         public Builder(Class<E[]> clazz){
             mClazz = clazz;
         }
 
+        /**
+         * if generator settled, it will use the generator to generate component in the array
+         *
+         * @param generator
+         */
         public Builder setGenerator(IGenerator<E> generator){
             mGenerator = generator;
             return this;
         }
 
+
+        /**
+         * set the length of array generated
+         * @param length
+         */
         public Builder setLength(int length){
             mLength = length;
             return this;
         }
 
-        public Builder setScaleOfNull(float scale){
-            mScaleOfNull = scale;
+
+        /**
+         * set the proportion of null in the array
+         * @param proportion
+         */
+        public Builder setProportionOfNull(float proportion){
+            mProportionOfNull = proportion;
             return this;
         }
 
 
+        /**
+         * set max length of array generated
+         * @param length
+         */
         public Builder setMaxLength(int length){
             mMaxLength = length;
             return this;
@@ -109,7 +145,7 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
 
         public ArrayGenerator<E> build(){
             ArrayGenerator<E> generator = new ArrayGenerator<>(mClazz);
-            generator.setScaleOfNull(mScaleOfNull);
+            generator.setProportionOfNull(mProportionOfNull);
             if(mGenerator != null) {
                 generator.setGenerator(mGenerator);
             }

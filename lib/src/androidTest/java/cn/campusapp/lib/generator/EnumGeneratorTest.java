@@ -45,7 +45,7 @@ public class EnumGeneratorTest extends BaseUnitTest{
         testEnums.add(TestEnum.T5);
         EnumGenerator<TestEnum> generator = new EnumGenerator.Builder<TestEnum>(TestEnum.class)
                 .setValueSet(testEnums)
-                .setScaleOfNull(0.0f)
+                .setProportionOfNull(0.0f)
                 .build();
         for(int i=0;i<1000;i++){
             TestEnum generated = generator.generate();
@@ -60,7 +60,7 @@ public class EnumGeneratorTest extends BaseUnitTest{
     @Test
     public void testSetScaleOfNull(){
         EnumGenerator<TestEnum> generator = new EnumGenerator.Builder<>(TestEnum.class)
-                .setScaleOfNull(0.0f)
+                .setProportionOfNull(0.0f)
                 .build();
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator.generate() != null);

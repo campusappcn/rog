@@ -105,7 +105,7 @@ public class StringGeneratorTest extends BaseUnitTest {
         charSet.add('D');
         StringGenerator generator = new StringGenerator.Builder()
                 .setCharSet(charSet)
-                .setScale(0, 0, 1)
+                .setProportion(0, 0, 1)
                 .build();
         for(int i=0;i<1000;i++){
             String generated = generator.generate();
@@ -141,7 +141,7 @@ public class StringGeneratorTest extends BaseUnitTest {
     @Test
     public void testSetScale(){
         StringGenerator generator0 = new StringGenerator.Builder()
-                .setScale(0, 0, 1)
+                .setProportion(0, 0, 1)
                 .build();
 
         for(int i=0;i<1000;i++){
@@ -150,20 +150,20 @@ public class StringGeneratorTest extends BaseUnitTest {
         }
 
         StringGenerator generator1 = new StringGenerator.Builder()
-                .setScale(0, 1, 0).build();
+                .setProportion(0, 1, 0).build();
         for(int i=0;i<1000;i++){
             String generated = generator1.generate();
             Assert.assertTrue(generated.equals(""));
         }
 
         StringGenerator generator2 = new StringGenerator.Builder()
-                .setScale(1, 0, 0).build();
+                .setProportion(1, 0, 0).build();
         for(int i=0;i<1000;i++){
             Assert.assertTrue(generator2.generate() == null);
         }
 
         StringGenerator generator3 = new StringGenerator.Builder()
-                .setScale(0, 1, 1).build();
+                .setProportion(0, 1, 1).build();
         boolean hasGeneratedNotEmpty3 = false;
         boolean hasGeneratedEmpty3 = false;
         for(int i=0;i<1000;i++){
@@ -179,7 +179,7 @@ public class StringGeneratorTest extends BaseUnitTest {
         Assert.assertTrue(hasGeneratedEmpty3 && hasGeneratedNotEmpty3);
 
         StringGenerator generator4 = new StringGenerator.Builder()
-                .setScale(1, 1, 0).build();
+                .setProportion(1, 1, 0).build();
         boolean hasGeneratedNull4 = false;
         boolean hasGeneratedEmpty4 = false;
         for(int i=0;i<1000;i++){
@@ -195,7 +195,7 @@ public class StringGeneratorTest extends BaseUnitTest {
         Assert.assertTrue(hasGeneratedEmpty4 && hasGeneratedNull4);
 
         StringGenerator generator5 = new StringGenerator.Builder()
-                .setScale(1, 0, 1).build();
+                .setProportion(1, 0, 1).build();
         boolean hasGeneratedNull5 = false;
         boolean hasGeneratedNotEmpty5 = false;
         for(int i=0;i<1000;i++){
@@ -212,7 +212,7 @@ public class StringGeneratorTest extends BaseUnitTest {
 
 
         StringGenerator generator6 = new StringGenerator.Builder()
-                .setScale(1, 1, 1).build();
+                .setProportion(1, 1, 1).build();
         boolean hasGeneratedNull6 = false;
         boolean hasGeneratedNotEmpty6 = false;
         boolean hasGeneratedEmpty6 = false;
@@ -232,7 +232,7 @@ public class StringGeneratorTest extends BaseUnitTest {
     @Test
     public void testSetChineseScale(){
         StringGenerator generator = new StringGenerator.Builder()
-                .setChineseScale(1, 1)
+                .setChineseProportion(1, 1)
                 .build();
         for(int i=0;i<1000;i++){
             generator.generate();
