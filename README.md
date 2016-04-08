@@ -1,6 +1,9 @@
 # Random object generator
 Rog is an object generator mainly used in android test. It can create objects and set random values to their fields.
 
+## Purpose
+It's annoied to make fake data when writing test cases. So Rog is created to help people do it. You can use it to get random data in test. And combined with gson and mock, you can get fake result without the server. Then you can do test work easily without server's implementation.   
+
 ## Features  
 
 - The main feature of Rog is creating objects with random values of their fields. And it's all right when the class has fields of enum, interface, abstract class, other classes and array types.
