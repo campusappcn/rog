@@ -156,7 +156,7 @@ public class ShortGeneratorTest extends BaseUnitTest {
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
         ShortGenerator generator = new ShortGenerator.Builder()
-                .setGenerateScale(1, 1, 1)
+                .setGenerateProportion(1, 1, 1)
                 .build();
         for(int i=0;i< 10000;i++){
             short generated = generator.generate();
@@ -172,7 +172,7 @@ public class ShortGeneratorTest extends BaseUnitTest {
         }
 
         ShortGenerator generator1 = new ShortGenerator.Builder()
-                .setGenerateScale(1, 0, 0)
+                .setGenerateProportion(1, 0, 0)
                 .build();
         for(int i=0;i<10000;i++){
             short generated = generator1.generate();
@@ -180,14 +180,14 @@ public class ShortGeneratorTest extends BaseUnitTest {
         }
 
         ShortGenerator generator2 = new ShortGenerator.Builder()
-                .setGenerateScale(0, 0, 1)
+                .setGenerateProportion(0, 0, 1)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator2.generate() < 0);
         }
 
         ShortGenerator generator3 = new ShortGenerator.Builder()
-                .setGenerateScale(1, 1, 0)
+                .setGenerateProportion(1, 1, 0)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator3.generate() >=0);

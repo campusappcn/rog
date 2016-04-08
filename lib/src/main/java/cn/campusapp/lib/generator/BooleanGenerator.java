@@ -68,8 +68,10 @@ public class BooleanGenerator implements IGenerator<Boolean>{
      * @return
      */
     private boolean getTrueOrFalse(float proportionOfFalse, float proportionOfTrue){
-        float r = mRandom.nextFloat();
-        return r >= proportionOfFalse;
+        int falseUp = (int) (100 * proportionOfFalse);
+        int trueUp = falseUp + (int)(100 * proportionOfTrue);
+        int r = mRandom.nextInt(trueUp);
+        return r >= falseUp;
     }
 
 

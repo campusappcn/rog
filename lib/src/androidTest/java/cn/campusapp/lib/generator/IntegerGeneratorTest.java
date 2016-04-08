@@ -155,7 +155,7 @@ public class IntegerGeneratorTest extends BaseUnitTest{
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
         IntegerGenerator generator = new IntegerGenerator.Builder()
-                .setGenerateScale(1, 1, 1)
+                .setGenerateProportion(1, 1, 1)
                 .build();
         for(int i=0;i< 10000;i++){
             int generated = generator.generate();
@@ -171,7 +171,7 @@ public class IntegerGeneratorTest extends BaseUnitTest{
         }
 
         IntegerGenerator generator1 = new IntegerGenerator.Builder()
-                .setGenerateScale(1, 0, 0)
+                .setGenerateProportion(1, 0, 0)
                 .build();
         for(int i=0;i<10000;i++){
             int generated = generator1.generate();
@@ -179,14 +179,14 @@ public class IntegerGeneratorTest extends BaseUnitTest{
         }
 
         IntegerGenerator generator2 = new IntegerGenerator.Builder()
-                .setGenerateScale(0, 0, 1)
+                .setGenerateProportion(0, 0, 1)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator2.generate() < 0);
         }
 
         IntegerGenerator generator3 = new IntegerGenerator.Builder()
-                .setGenerateScale(1, 1, 0)
+                .setGenerateProportion(1, 1, 0)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator3.generate() >=0);

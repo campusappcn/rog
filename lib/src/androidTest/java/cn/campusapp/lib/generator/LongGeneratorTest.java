@@ -152,7 +152,7 @@ public class LongGeneratorTest extends BaseUnitTest {
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
         LongGenerator generator = new LongGenerator.Builder()
-                .setGenerateScale(1, 1, 1)
+                .setGenerateProportion(1, 1, 1)
                 .build();
         for(int i=0;i< 10000;i++){
             long generated = generator.generate();
@@ -168,7 +168,7 @@ public class LongGeneratorTest extends BaseUnitTest {
         }
 
         LongGenerator generator1 = new LongGenerator.Builder()
-                .setGenerateScale(1, 0, 0)
+                .setGenerateProportion(1, 0, 0)
                 .build();
         for(int i=0;i<10000;i++){
             long generated = generator1.generate();
@@ -176,14 +176,14 @@ public class LongGeneratorTest extends BaseUnitTest {
         }
 
         LongGenerator generator2 = new LongGenerator.Builder()
-                .setGenerateScale(0, 0, 1)
+                .setGenerateProportion(0, 0, 1)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator2.generate() < 0);
         }
 
         LongGenerator generator3 = new LongGenerator.Builder()
-                .setGenerateScale(1, 1, 0)
+                .setGenerateProportion(1, 1, 0)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator3.generate() >=0);

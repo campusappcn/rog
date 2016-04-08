@@ -29,7 +29,8 @@ public class ByteGenerator extends NumberGenerator<Byte> {
         if(mMaxBound == Byte.MAX_VALUE){
             mMaxBound = (byte)(mMaxBound - 1);
         }
-        return (byte)( temp + RandomExtendUtil.nextByte(mRandom, (byte) (mMaxBound - temp + 1))); // 1 + [0, 10) -> [2, 11)
+        byte value  = (byte) (mMaxBound - temp + 1);
+        return (byte)( temp + RandomExtendUtil.nextByte(mRandom, value<=0? 1 : value)); // 1 + [0, 10) -> [2, 11)
     }
 
     /**
@@ -51,7 +52,8 @@ public class ByteGenerator extends NumberGenerator<Byte> {
         } else if(mMinBound == Byte.MIN_VALUE + 1){
             mMinBound = (byte) (mMinBound + 1);
         }
-        return (byte)(-(-temp + RandomExtendUtil.nextByte(mRandom, (byte) (-mMinBound + temp + 1))));  // -(1 + [0, 10)) -> - [1, 11),;
+        byte value = (byte) (-mMinBound + temp + 1);
+        return (byte)(-(-temp + RandomExtendUtil.nextByte(mRandom, value <=0 ? 1 : value  )));  // -(1 + [0, 10)) -> - [1, 11),;
     }
 
     @Override
@@ -126,8 +128,8 @@ public class ByteGenerator extends NumberGenerator<Byte> {
         }
 
 
-        public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
+        public Builder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            return (Builder) super.setGenerateProportion(positiveProportion, zeroProportion, negativeProportion);
         }
 
 

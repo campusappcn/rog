@@ -21,8 +21,9 @@ public class ArrayGeneratorTest extends BaseUnitTest {
     @Test
     public void testSetLength() {
         ArrayGenerator<Double> generator = new ArrayGenerator
-                .Builder<Double>((Class<Double[]>) (new Double[10]).getClass())
+                .Builder<> ( Double[].class)
                 .setLength(10)
+                .setProportionOfNull(0.0f)
                 .build();
 
 
@@ -33,10 +34,11 @@ public class ArrayGeneratorTest extends BaseUnitTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testSetGenerator() {
-        Class<TestObject[]> clazz = (Class<TestObject[]>) (new TestObject[10]).getClass();
+        Class<TestObject[]> clazz =   TestObject[].class;
         ArrayGenerator<TestObject> generator = new ArrayGenerator
-                .Builder<TestObject>(clazz)
+                .Builder<>(clazz)
                 .setGenerator(new TestGenerator())
+                .setProportionOfNull(0.0f)
                 .build();
         TestObject[] tests = generator.generate();
         for (TestObject object : tests) {
@@ -44,7 +46,6 @@ public class ArrayGeneratorTest extends BaseUnitTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSetMaxLength() {
         Random random = new Random();
@@ -53,13 +54,33 @@ public class ArrayGeneratorTest extends BaseUnitTest {
             int maxLength = 1 + random.nextInt(100);
 
             ArrayGenerator<Double> generator = new ArrayGenerator
-                    .Builder<>((Class<Double[]>) (new Double[10]).getClass())
+                    .Builder<> (Double[].class)
+                    .setProportionOfNull(0.0f)
                     .setMaxLength(maxLength)
                     .build();
             for (int j = 0; j < 100; j++) {
                 Double[] doubles = generator.generate();
-                Assert.assertTrue(doubles.length < maxLength);
+                    Assert.assertTrue(doubles.length < maxLength);
             }
+        }
+    }
+
+    @Test
+    public void testSetProportionOfNull(){
+        ArrayGenerator<Double> generator = new ArrayGenerator
+                .Builder<>(Double[].class)
+                .setProportionOfNull(0.0f)
+                .build();
+        for(int i=0;i<1000;i++){
+            Assert.assertTrue(generator.generate() != null);
+        }
+
+        ArrayGenerator<Double> generator1 = new ArrayGenerator
+                .Builder<>(Double[].class)
+                .setProportionOfNull(1.0f)
+                .build();
+        for(int i=0;i<1000;i++){
+            Assert.assertTrue(generator1.generate() == null);
         }
     }
 

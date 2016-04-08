@@ -11,14 +11,14 @@ import cn.campusapp.lib.factory.TypeGeneratorFactory;
 public class ArrayGenerator<T> implements IGenerator<T[]> {
 
 
-    Class<T[]> mClazz;
+    Class<? extends T[]> mClazz;
     Random mRandom = new Random();
     int mLength = -1; //if this field settled, the length of this array will be mLength
     float mProportionOfNull = 0.1f;
     int mMaxLength = 100;
     TypeGeneratorFactory mFactory = TypeGeneratorFactory.getFactory();
 
-    protected ArrayGenerator(Class<T[]> clazz){
+    protected ArrayGenerator(Class<? extends T[]> clazz){
         if(clazz == null){
             throw new IllegalArgumentException("clazz can't be null");
         }
@@ -69,20 +69,28 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
     @SuppressWarnings("unchecked")
     @Override
     public T[] generate() {
-        IGenerator<T> generator = (IGenerator<T>) mFactory.getGenerator(mClazz.getComponentType());
-        if(generator == null){
-            generator = new ClassGenerator
-                    .Builder<T>((Class<T>) mClazz.getComponentType())
-                    .setProportionOfNull(mProportionOfNull)
-                    .build();
-            mFactory.setGenerator(generator);
+        if(isGenerateNull()){
+            return null;
+        } else {
+            IGenerator<T> generator = (IGenerator<T>) mFactory.getGenerator(mClazz.getComponentType());
+            if (generator == null) {
+                generator = new ClassGenerator
+                        .Builder<T>((Class<T>) mClazz.getComponentType())
+                        .build();
+                mFactory.setGenerator(generator);
+            }
+            mLength = mLength != -1 ? mLength : mRandom.nextInt(mMaxLength);
+            T[] array = (T[]) Array.newInstance(mClazz.getComponentType(), mLength);
+            for (int i = 0; i < mLength; i++) {
+                array[i] = generator.generate();
+            }
+            return array;
         }
-        mLength = mLength != -1 ? mLength : mRandom.nextInt(mMaxLength);
-        T[] array = (T[]) Array.newInstance(mClazz.getComponentType(), mLength);
-        for(int i=0;i<mLength;i++){
-            array[i] = generator.generate();
-        }
-        return array;
+    }
+
+    private boolean isGenerateNull(){
+        float r = mRandom.nextFloat();
+        return r < mProportionOfNull;
     }
 
 
@@ -93,13 +101,13 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
 
 
     public static class Builder<E> {
-        Class<E[]> mClazz;
+        Class<? extends E[]> mClazz;
         IGenerator<E> mGenerator;
         int mLength = -1; //if this field settled, the length of this array will be mLength
         float mProportionOfNull = 0.1f;
         int mMaxLength = 100;
 
-        public Builder(Class<E[]> clazz){
+        public Builder(Class<? extends E[]> clazz){
             mClazz = clazz;
         }
 
@@ -108,7 +116,7 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
          *
          * @param generator
          */
-        public Builder setGenerator(IGenerator<E> generator){
+        public Builder<E> setGenerator(IGenerator<E> generator){
             mGenerator = generator;
             return this;
         }
@@ -118,7 +126,7 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
          * set the length of array generated
          * @param length
          */
-        public Builder setLength(int length){
+        public Builder<E> setLength(int length){
             mLength = length;
             return this;
         }
@@ -128,7 +136,7 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
          * set the proportion of null in the array
          * @param proportion
          */
-        public Builder setProportionOfNull(float proportion){
+        public Builder<E> setProportionOfNull(float proportion){
             mProportionOfNull = proportion;
             return this;
         }
@@ -138,7 +146,7 @@ public class ArrayGenerator<T> implements IGenerator<T[]> {
          * set max length of array generated
          * @param length
          */
-        public Builder setMaxLength(int length){
+        public Builder<E> setMaxLength(int length){
             mMaxLength = length;
             return this;
         }

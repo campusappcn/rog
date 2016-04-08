@@ -27,7 +27,7 @@ public class InterfaceOrAbstractClassGenerator<T> implements IGenerator<T> {
     Random mRandom = new Random();
 
     protected InterfaceOrAbstractClassGenerator(Class<T> clz, ITypeGeneratorFactory factory){
-        if(clz == null || (! clz.isInterface() && ! Modifier.isAbstract(clz.getModifiers()))|| factory == null){
+        if(clz == null || clz.isArray() || (! clz.isInterface() && ! Modifier.isAbstract(clz.getModifiers()))|| factory == null){
             throw new IllegalArgumentException("The clazz must be a interface or abstract class!");
         }
         mClazz = clz;

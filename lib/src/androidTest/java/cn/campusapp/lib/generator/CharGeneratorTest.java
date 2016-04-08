@@ -41,7 +41,7 @@ public class CharGeneratorTest extends BaseUnitTest{
     @Test
     public void testSetMinValue(){
         CharGenerator generator = new CharGenerator.Builder()
-                .setMinValue('A')
+                .setMinBound('A')
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator.generate() >= 'A');

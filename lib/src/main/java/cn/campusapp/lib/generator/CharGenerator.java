@@ -95,7 +95,7 @@ public class CharGenerator implements IGenerator<Character>{
          * set low bound of values genrated
          * @param minBound
          */
-        public Builder setMinValue(char minBound){
+        public Builder setMinBound(char minBound){
             mMinBound = minBound;
             return this;
         }

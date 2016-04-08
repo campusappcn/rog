@@ -22,7 +22,8 @@ public class DoubleGenerator extends NumberGenerator<Double> {
     protected Double getRandomPositiveValue() {
         //min 1 max 10
         double temp = mMinBound <= 0 ? Double.MIN_VALUE : mMinBound;
-        return  temp + RandomExtendUtil.nextDouble(mRandom, mMaxBound - temp );
+        double value = mMaxBound - temp;
+        return  temp + RandomExtendUtil.nextDouble(mRandom, value <= 0 ? 1 : value);
 
     }
 
@@ -34,7 +35,9 @@ public class DoubleGenerator extends NumberGenerator<Double> {
     protected Double getRandomNegativeValue() {
         //min -10 , max -1
         double temp = mMaxBound < 0 ? mMaxBound : - Double.MIN_VALUE;
-        return -(-temp + RandomExtendUtil.nextDouble(mRandom, -mMinBound + temp));
+        double value = -mMinBound + temp;
+
+        return -(-temp + RandomExtendUtil.nextDouble(mRandom, value <= 0 ? 1 : value));
     }
 
     @Override
@@ -104,12 +107,12 @@ public class DoubleGenerator extends NumberGenerator<Double> {
 
         /**
          * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
+         * @param positiveProportion
+         * @param zeroProportion
+         * @param negativeProportion
          */
-        public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
+        public Builder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            return (Builder) super.setGenerateProportion(positiveProportion, zeroProportion, negativeProportion);
         }
 
         @Override

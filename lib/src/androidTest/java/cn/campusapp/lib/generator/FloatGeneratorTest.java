@@ -154,7 +154,7 @@ public class FloatGeneratorTest extends BaseUnitTest {
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
         FloatGenerator generator = new FloatGenerator.Builder()
-                .setGenerateScale(1, 1, 1)
+                .setGenerateProportion(1, 1, 1)
                 .build();
         for(int i=0;i< 10000;i++){
             float generated = generator.generate();
@@ -170,7 +170,7 @@ public class FloatGeneratorTest extends BaseUnitTest {
         }
 
         FloatGenerator generator1 = new FloatGenerator.Builder()
-                .setGenerateScale(1, 0, 0)
+                .setGenerateProportion(1, 0, 0)
                 .build();
         for(int i=0;i<10000;i++){
             float generated = generator1.generate();
@@ -178,14 +178,14 @@ public class FloatGeneratorTest extends BaseUnitTest {
         }
 
         FloatGenerator generator2 = new FloatGenerator.Builder()
-                .setGenerateScale(0, 0, 1)
+                .setGenerateProportion(0, 0, 1)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator2.generate() < 0);
         }
 
         FloatGenerator generator3 = new FloatGenerator.Builder()
-                .setGenerateScale(1, 1, 0)
+                .setGenerateProportion(1, 1, 0)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator3.generate() >=0);

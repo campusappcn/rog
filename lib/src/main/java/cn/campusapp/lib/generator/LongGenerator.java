@@ -26,7 +26,8 @@ public class LongGenerator extends NumberGenerator<Long> {
         if(mMaxBound == Long.MAX_VALUE){
             mMaxBound -= 1;
         }
-        return temp + RandomExtendUtil.nextLong(mRandom, mMaxBound -temp + 1); // 1 + [0, 10) -> [2, 11)
+        long value = mMaxBound - temp + 1;
+        return temp + RandomExtendUtil.nextLong(mRandom, value <=0? 1 : value); // 1 + [0, 10) -> [2, 11)
     }
 
     /**
@@ -48,7 +49,8 @@ public class LongGenerator extends NumberGenerator<Long> {
         } else if(mMinBound == Long.MIN_VALUE + 1){
             mMinBound += 1;
         }
-        return -(-temp + RandomExtendUtil.nextLong(mRandom, -mMinBound + temp + 1));  // -(1 + [0, 10)) -> - [1, 11),;
+        long value = -mMinBound + temp + 1;
+        return -(-temp + RandomExtendUtil.nextLong(mRandom, value <=0 ? 1 : value));  // -(1 + [0, 10)) -> - [1, 11),;
     }
 
     @Override
@@ -120,12 +122,12 @@ public class LongGenerator extends NumberGenerator<Long> {
 
         /**
          * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
+         * @param positiveProportion
+         * @param zeroProportion
+         * @param negativeProportion
          */
-        public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
+        public Builder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            return (Builder) super.setGenerateProportion(positiveProportion, zeroProportion, negativeProportion);
         }
 
 

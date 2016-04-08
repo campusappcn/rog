@@ -234,10 +234,13 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
      * @return -1 negative 0 zero  1 positive
      */
     private int getGenerateNumberType(float negativeProportion, float zeroProportion, float positiveProportion){
-        float r = mRandom.nextFloat();
-        if(r < negativeProportion){
+        int negativeUp = (int) (100 * negativeProportion);
+        int zeroProportionUp = negativeUp + (int) (100 * zeroProportion);
+        int positiveProportionUp = zeroProportionUp + (int) (100 * positiveProportion);
+        int r = mRandom.nextInt(positiveProportionUp);
+        if(r < negativeUp){
             return -1;
-        } else if(r < negativeProportion + zeroProportion){
+        } else if(r < zeroProportionUp){
             return 0;
         } else{
             return 1;
@@ -355,14 +358,14 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
 
         /**
          * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
+         * @param positiveProportion
+         * @param zeroProportion
+         * @param negativeProportion
          */
-        public NumberBuilder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            mProportionOfNegative = negativeScale;
-            mProportionOfZero = zeroScale;
-            mProportionOfPositive = positiveScale;
+        public NumberBuilder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            mProportionOfNegative = negativeProportion;
+            mProportionOfZero = zeroProportion;
+            mProportionOfPositive = positiveProportion;
             return this;
         }
 
@@ -378,8 +381,8 @@ public abstract class NumberGenerator <T extends Number> implements IGenerator <
             generator.setGenerateNegative(mGenerateNegative);
             generator.setGenerateZero(mGenerateZero);
             generator.setGeneratePositive(mGeneratePositive);
-            if(generator.smallerOrEqual(mMaxBound, mMinBound)){
-                throw new IllegalArgumentException("Min bound can't be big than max bound");
+            if(generator.smaller(mMaxBound, mMinBound)){
+                throw new IllegalArgumentException(String.format("Min bound can't be big than max bound: %s, %s", mMaxBound.toString(), mMinBound.toString()));
             }
             generator.setMaxBound(mMaxBound);
             generator.setMinBound(mMinBound);

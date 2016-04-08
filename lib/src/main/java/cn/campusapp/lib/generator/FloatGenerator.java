@@ -22,7 +22,8 @@ public class FloatGenerator extends NumberGenerator<Float> {
     protected Float getRandomPositiveValue() {
         //min 1 max 10
         float temp = mMinBound <= 0 ? Float.MIN_VALUE : mMinBound;
-        return  temp + RandomExtendUtil.nextFloat(mRandom, mMaxBound - temp);
+        float value = mMaxBound - temp;
+        return  temp + RandomExtendUtil.nextFloat(mRandom, value <=0 ? 1 : value);
 
     }
 
@@ -34,7 +35,8 @@ public class FloatGenerator extends NumberGenerator<Float> {
     protected Float getRandomNegativeValue() {
         //min -10 , max -1
         float temp = mMaxBound < 0 ? mMaxBound : - Float.MIN_VALUE;
-        return -(-temp + RandomExtendUtil.nextFloat(mRandom, -mMinBound + temp));
+        float value = -mMinBound + temp;
+        return -(-temp + RandomExtendUtil.nextFloat(mRandom, value<=0? 1 : value));
     }
 
     @Override
@@ -106,12 +108,12 @@ public class FloatGenerator extends NumberGenerator<Float> {
 
         /**
          * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
+         * @param positiveProportion
+         * @param zeroProportion
+         * @param negativeProportion
          */
-        public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
+        public Builder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            return (Builder) super.setGenerateProportion(positiveProportion, zeroProportion, negativeProportion);
         }
 
         @Override

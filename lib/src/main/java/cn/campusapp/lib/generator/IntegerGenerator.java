@@ -28,7 +28,8 @@ public class IntegerGenerator extends NumberGenerator<Integer> {
         if(mMaxBound == Integer.MAX_VALUE){
             mMaxBound -= 1;
         }
-        return temp + mRandom.nextInt(mMaxBound - temp + 1) ; // 1 + [0, 8)  -> [1, 9)
+        int value = mMaxBound - temp + 1;
+        return temp + mRandom.nextInt(value <= 0 ? 1 : value) ; // 1 + [0, 8)  -> [1, 9)
     }
 
     /**
@@ -50,8 +51,8 @@ public class IntegerGenerator extends NumberGenerator<Integer> {
         } else if(mMinBound ==Integer.MIN_VALUE + 1){
             mMinBound += 1;
         }
-
-        return -(-temp + mRandom.nextInt(-mMinBound + temp + 1));  // -(1 + [0, 9)) -> - [1, 10),
+        int value = -mMinBound + temp + 1;
+        return -(-temp + mRandom.nextInt(value <=0? 1 : value));  // -(1 + [0, 9)) -> - [1, 10),
     }
 
     @Override
@@ -122,12 +123,12 @@ public class IntegerGenerator extends NumberGenerator<Integer> {
 
         /**
          * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
+         * @param positiveProportion
+         * @param zeroProportion
+         * @param negativeProportion
          */
-        public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
+        public Builder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            return (Builder) super.setGenerateProportion(positiveProportion, zeroProportion, negativeProportion);
         }
 
 

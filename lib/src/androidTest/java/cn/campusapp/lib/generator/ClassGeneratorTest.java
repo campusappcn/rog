@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import cn.campusapp.lib.BaseUnitTest;
+import cn.campusapp.lib.generator.classes.TestArrayClass;
 import cn.campusapp.lib.generator.classes.TestClass;
 import cn.campusapp.lib.generator.classes.TestClass2;
 import cn.campusapp.lib.generator.classes.TestClass2Generator;
@@ -135,6 +136,52 @@ public class ClassGeneratorTest extends BaseUnitTest{
 
             Assert.assertTrue(object == null);
         }
+    }
+
+
+    @Test
+    public void testUseToGenerateEnum(){
+        ClassGenerator<EnumGeneratorTest.TestEnum> generator = new ClassGenerator.Builder<>(EnumGeneratorTest.TestEnum.class)
+                .setProportionOfNull(0.0f)
+                .build();
+        for(int i=0;i<1000;i++){
+            Assert.assertTrue(generator.generate() != null);
+        }
+    }
+
+    @Test
+    public void testUseToGenerateArray(){
+        ArrayGenerator<TestClass2> arrayGenerator = new ArrayGenerator.Builder<>(TestClass2[].class)
+                .setProportionOfNull(0.0f)
+                .setLength(11)
+                .build();
+        ClassGenerator<TestClass2[]> generator = new ClassGenerator.Builder<>(TestClass2[].class)
+                .setTypeGenerator(arrayGenerator)
+                .build();
+        for(int i=0;i<100;i++){
+            TestClass2[] values = generator.generate();
+            Assert.assertTrue(values.length == 11);
+        }
+        ClassGenerator<TestClass2[]> generator1 = new ClassGenerator.Builder<>(TestClass2[].class)
+                .build();
+        for(int i=0;i<100;i++){
+            TestClass2[] generated = generator1.generate();
+            Assert.assertTrue(generated == null || generated.getClass().isArray());
+        }
+
+
+        ClassGenerator<TestArrayClass> generator2 = new ClassGenerator.Builder<>(TestArrayClass.class)
+                .build();
+        boolean hasGeneratedNotEmptyArray = false;
+        for(int i=0;i<100;i++){
+            TestArrayClass arrayClass = generator2.generate();
+            if(arrayClass!= null && arrayClass.a != null && arrayClass.a.length > 0 && arrayClass.a[0] != null){
+                hasGeneratedNotEmptyArray = true;
+            }
+        }
+        Assert.assertTrue(hasGeneratedNotEmptyArray);
+
+
     }
 
 

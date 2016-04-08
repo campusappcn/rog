@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 
 import cn.campusapp.lib.BaseUnitTest;
-import timber.log.Timber;
 
 /**
  * Created by kris on 16/4/5.
@@ -44,7 +43,7 @@ public class ByteGeneratorTest extends BaseUnitTest {
     @Test
     public void testGenerateNegative(){
 
-        ShortGenerator generator = new ShortGenerator.Builder()
+        ByteGenerator generator = new ByteGenerator.Builder()
                 .setGenerateNegative(false)
                 .build();
         for(int i=0;i<10000;i++){
@@ -54,7 +53,7 @@ public class ByteGeneratorTest extends BaseUnitTest {
 
     @Test
     public void testGeneratePositive(){
-        ShortGenerator generator = new ShortGenerator.Builder()
+        ByteGenerator generator = new ByteGenerator.Builder()
                 .setGeneratePositive(false)
                 .build();
         for(int i=0;i<10000;i++){
@@ -66,15 +65,12 @@ public class ByteGeneratorTest extends BaseUnitTest {
     public void testSetMaxBound(){
         Random random  = new Random();
         for(int i=0;i<100;i++) {
-            short maxBound = (short)random.nextInt();
-            ShortGenerator generator = new ShortGenerator.Builder()
+            byte maxBound = (byte)random.nextInt();
+            ByteGenerator generator = new ByteGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
-            for(int j=0;j<10000;j++){
-                short generated = generator.generate();
-                if(generated >= maxBound ){
-                    Timber.i("MaxBound: %d, Generated: %d", maxBound, generated);
-                }
+            for(int j=0;j<1000;j++){
+                byte generated = generator.generate();
                 Assert.assertTrue(generated <= maxBound);
             }
         }
@@ -85,27 +81,27 @@ public class ByteGeneratorTest extends BaseUnitTest {
     public void testSetMinBound(){
         Random random = new Random();
         for(int i=0;i<100;i++){
-            short minBound = (short)random.nextInt();
-            ShortGenerator generator = new ShortGenerator.Builder()
+            byte minBound = (byte)random.nextInt();
+            ByteGenerator generator = new ByteGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
-            for(int j=0;j<10000;j++){
-                Assert.assertTrue(generator.generate() >=minBound);
+            for(int j=0;j<1000;j++){
+                Assert.assertTrue("MinBound "+ minBound, generator.generate() >=minBound);
             }
         }
     }
 
     @Test
     public void testSetPositiveValueSet(){
-        List<Short> mValueSet = new ArrayList<>();
-        mValueSet.add((short)1);
-        mValueSet.add((short)5);
-        mValueSet.add((short)10434);
-        ShortGenerator generator = new ShortGenerator.Builder()
+        List<Byte> mValueSet = new ArrayList<>();
+        mValueSet.add((byte)1);
+        mValueSet.add((byte)5);
+        mValueSet.add((byte)10434);
+        ByteGenerator generator = new ByteGenerator.Builder()
                 .setPositiveValueSet(mValueSet)
                 .build();
         for(int i=0;i<10000;i++){
-            short generated = generator.generate();
+            byte generated = generator.generate();
             if(generated > 0) {
                 Assert.assertTrue(mValueSet.contains(generated));
             }
@@ -116,15 +112,15 @@ public class ByteGeneratorTest extends BaseUnitTest {
 
     @Test
     public void testSetNegativeValueSet(){
-        List<Short> mValueSet = new ArrayList<>();
-        mValueSet.add((short)-1);
-        mValueSet.add((short)-5);
-        mValueSet.add((short)-330);
-        ShortGenerator generator = new ShortGenerator.Builder()
+        List<Byte> mValueSet = new ArrayList<>();
+        mValueSet.add((byte)-1);
+        mValueSet.add((byte)-5);
+        mValueSet.add((byte)-330);
+        ByteGenerator generator = new ByteGenerator.Builder()
                 .setNegativeValueSet(mValueSet)
                 .build();
         for(int i=0;i<10000;i++){
-            short generated = generator.generate();
+            byte generated = generator.generate();
             if(generated <0) {
                 Assert.assertTrue(mValueSet.contains(generated));
             }
@@ -134,13 +130,13 @@ public class ByteGeneratorTest extends BaseUnitTest {
 
     @Test
     public void testSetValueSet(){
-        List<Short> mValueSet = new ArrayList<>();
+        List<Byte> mValueSet = new ArrayList<>();
         Random random = new Random();
         for(int i =0;i<1000;i++){
-            mValueSet.add((short)random.nextInt());
+            mValueSet.add((byte)random.nextInt());
         }
 
-        ShortGenerator generator = new ShortGenerator.Builder()
+        ByteGenerator generator = new ByteGenerator.Builder()
                 .setValueSet(mValueSet)
                 .build();
 
@@ -155,8 +151,8 @@ public class ByteGeneratorTest extends BaseUnitTest {
         boolean hasGenerateZero = false;
         boolean hasGeneratePositive = false;
         boolean hasGenerateNegative = false;
-        ShortGenerator generator = new ShortGenerator.Builder()
-                .setGenerateScale(1, 1, 1)
+        ByteGenerator generator = new ByteGenerator.Builder()
+                .setGenerateProportion(1, 1, 1)
                 .build();
         for(int i=0;i< 10000;i++){
             short generated = generator.generate();
@@ -171,23 +167,23 @@ public class ByteGeneratorTest extends BaseUnitTest {
             }
         }
 
-        ShortGenerator generator1 = new ShortGenerator.Builder()
-                .setGenerateScale(1, 0, 0)
+        ByteGenerator generator1 = new ByteGenerator.Builder()
+                .setGenerateProportion(1, 0, 0)
                 .build();
         for(int i=0;i<10000;i++){
             short generated = generator1.generate();
             Assert.assertTrue(generated > 0);
         }
 
-        ShortGenerator generator2 = new ShortGenerator.Builder()
-                .setGenerateScale(0, 0, 1)
+        ByteGenerator generator2 = new ByteGenerator.Builder()
+                .setGenerateProportion(0, 0, 1)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator2.generate() < 0);
         }
 
-        ShortGenerator generator3 = new ShortGenerator.Builder()
-                .setGenerateScale(1, 1, 0)
+        ByteGenerator generator3 = new ByteGenerator.Builder()
+                .setGenerateProportion(1, 1, 0)
                 .build();
         for(int i=0;i<10000;i++){
             Assert.assertTrue(generator3.generate() >=0);

@@ -28,7 +28,8 @@ public class ShortGenerator extends NumberGenerator<Short> {
         if(mMaxBound == Short.MAX_VALUE){
             mMaxBound = (short)(mMaxBound - 1);
         }
-        return (short)( temp + RandomExtendUtil.nextShort(mRandom, (short)(mMaxBound - temp + 1))); // 1 + [0, 10) -> [2, 11)
+        short value = (short)(mMaxBound - temp + 1);
+        return (short)( temp + RandomExtendUtil.nextShort(mRandom, value <=0? 1 : value)); // 1 + [0, 10) -> [2, 11)
     }
 
     /**
@@ -50,7 +51,8 @@ public class ShortGenerator extends NumberGenerator<Short> {
         } else if(mMinBound ==Short.MIN_VALUE + 1){
             mMinBound = (short)(mMinBound + 1);
         }
-        return (short)(-(-temp + RandomExtendUtil.nextShort(mRandom, (short)(-mMinBound + temp + 1))));  // -(1 + [0, 10)) -> - [1, 11),;
+        short value =  (short)(-mMinBound + temp + 1);
+        return (short)(-(-temp + RandomExtendUtil.nextShort(mRandom, value <=0? 1:value)));  // -(1 + [0, 10)) -> - [1, 11),;
     }
 
     @Override
@@ -125,12 +127,12 @@ public class ShortGenerator extends NumberGenerator<Short> {
 
         /**
          * the scale to generate positive, zero, negative value, the default is 7:1:2
-         * @param positiveScale
-         * @param zeroScale
-         * @param negativeScale
+         * @param positiveProportion
+         * @param zeroProportion
+         * @param negativeProportion
          */
-        public Builder setGenerateScale(int positiveScale, int zeroScale, int negativeScale){
-            return (Builder) super.setGenerateScale(positiveScale, zeroScale, negativeScale);
+        public Builder setGenerateProportion(int positiveProportion, int zeroProportion, int negativeProportion){
+            return (Builder) super.setGenerateProportion(positiveProportion, zeroProportion, negativeProportion);
         }
 
 
