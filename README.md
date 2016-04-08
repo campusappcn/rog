@@ -206,7 +206,7 @@ Then, add the dependency.
 ```
 dependencies {
     androidTestCompile 'com.github.campusappcn:rog:1.0.0'   //Dependency rog in instucmentation test.
-    //compile 'com.github.campusappcn:rog:1.0.0'       //if you want to use rog in everywhere.
+    //compile 'com.github.campusappcn:rog:1.0.0'       //if you want to use rog everywhere.
     //testCompile 'com.github.campusappcn:rog:1.0.0'   //If you want to use rog in Java unit test.  
 }
 ```
