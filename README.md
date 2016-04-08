@@ -184,7 +184,10 @@ Generator to genrate enum. You
         byte value = generator.generate();
 ```
 
-The other genertors of number in primitive types, including int, short, byte, double, float and long, have the same function with ByteGenerator. So I won't give their examples. You can find them in [Samples](https://github.com/campusappcn/rog/tree/master/app/src/androidTest/java/cn/campusapp/rog/sample/Samples.java)
+The other genertors of number in primitive types, including int, short, byte, double, float and long, have the same function with ByteGenerator. So I won't give their examples. You can find them in [Samples](https://github.com/campusappcn/rog/tree/master/sample/src/androidTest/java/cn/campusapp/rog/sample/Samples.java)
+
+## Test Coverage
+![Test Coverage](https://img.alicdn.com/imgextra/i2/754328530/TB2TQ62mFXXXXXdXXXXXXXXXXXX_!!754328530.png)
 
 ## Install
 First, add jitpack.io to your repositories.
