@@ -123,8 +123,8 @@ public class Samples{
                         //.setValueSet(valueSet)  //values generated will fetched from the list
                 .setNegativeValueSet(negativeSet)  //negative values generated will be fetched from the list
                 .setPositiveValueSet(valueSet)   //positive values generated will be fetched from the list
-                .setMaxBound( 123.1d)   //set the max bound of values generated
-                .setMinBound( -4.0d)  //set the min bound of values generated
+                .setMaxBound(123.1d)   //set the max bound of values generated
+                .setMinBound(-4.0d)  //set the min bound of values generated
                 .build();
         double value = generator.generate();
     }
@@ -270,15 +270,18 @@ public class Samples{
         subClasses.add(TestInterfaceClass.class);
         ClassGenerator<TestClass> generator = new ClassGenerator.Builder<>(TestClass.class)
                 .setProportionOfNull(0.1f)  //set the proportion to generate null, default to 0.1f
-                //Set generator of type (generator.getClassToGenerate()).It will use the generator to generate objects of this type afterwards.
-                //If the generator is a instance of ClassGenerator, it may not make effect. So implement a IGenerator yourself.
+                //Set generator of type (generator.getClassToGenerate()).
+                //It will use the generator to generate objects of this type afterwards.
                 .setTypeGenerator(new TestClass2Generator())
-                //set the max layer of classes referencing tree. For example, Class1 references Class2, Class1's layer is 1 and Class2's layer is 1.
-                //If max layer is 1. Then Class2 can't generate any more object except primitive type and its field of class types will be null.
+                //Set the max layer of classes referencing tree.
+                //For example, Class1 references Class2, Class1's layer is 0 and Class2's layer is 1.
+                //If max layer is 1. Then Class2 can't generate any more object except primitive type
+                //and its fields of class types will be null.
                 //Max level ensures the process of object generating will stop and avoids stack overflow.
-                .setMaxLevel(4)
-                //set subClasses of clazz.When the generator needs to generate this interface or abstract class, it will
-                //generate object of one of the classes in the subClass set.
+                .setMaxLayer(4)
+                //set subClasses of interface or abstract class.
+                //When the generator needs to generate object of the interface or abstract class,
+                // it will generate object of one of the classes in the subClass set.
                 .setSubClass(TestInterface.class, subClasses)
                 .build();
         TestClass value = generator.generate();

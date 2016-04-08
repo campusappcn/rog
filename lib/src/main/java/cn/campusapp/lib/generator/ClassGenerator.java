@@ -91,7 +91,7 @@ public class ClassGenerator<T> implements IGenerator<T> {
             generator = new ClassGenerator.Builder<>(clazz, mGeneratorFactory, mStore)
                     .setProportionOfNull(mProportionOfNull)
                     .setStrategy(mStrategy)
-                    .setMaxLevel(mMaxLayer)
+                    .setMaxLayer(mMaxLayer)
                     .build();
         }
         return generator;
@@ -325,7 +325,7 @@ public class ClassGenerator<T> implements IGenerator<T> {
          * @param maxLayer
          * @return
          */
-        public Builder<E> setMaxLevel(int maxLayer) {
+        public Builder<E> setMaxLayer(int maxLayer) {
             mMaxLayer = maxLayer;
             return this;
         }
