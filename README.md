@@ -201,11 +201,13 @@ allprojects {
 }
 ```
 
-Then, add the dependency.
+Then, add the dependency. 
 
 ```
 dependencies {
-    compile 'com.github.campusappcn:rog:1.0.0'
+    androidTestCompile 'com.github.campusappcn:rog:1.0.0'   //Dependency rog in instucmentation test.
+    //compile 'com.github.campusappcn:rog:1.0.0'       //if you want to use rog in everywhere.
+    //testCompile 'com.github.campusappcn:rog:1.0.0'   //If you want to use rog in Java unit test.  
 }
 ```
 
