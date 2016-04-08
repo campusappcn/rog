@@ -1,10 +1,10 @@
 # Random object generator
-Rog is an object generator mainly used in android test. It can create object and set random values to its fields.
+Rog is an object generator mainly used in android test. It can create objects and set random values to their fields.
 
 ## Features  
 
-- The main feature or Rog is creating object with random values of its field. And it's all right when the class has field of enum, interface, abstract class, other classes and array types.
-- It provides default generators of primitive types. They provide some function to change their behaviour. It also support changing the default generator to user's own implementation.
+- The main feature of Rog is creating objects with random values of their fields. And it's all right when the class has fields of enum, interface, abstract class, other classes and array types.
+- It provides default generators for primitive types. These generators provide some function to change their behaviours. It also supports replacing the default generator with user's own implementations.
 - It providers default generators for special types including enum, interface, abstract class and array.
 
 
@@ -16,41 +16,41 @@ You can use ClassGenerator to geneate any class you want even it's an array or e
 		List<Class<? extends TestInterface>> subClasses = new ArrayList<>();
         subClasses.add(TestInterfaceClass.class);
         ClassGenerator<TestClass> generator = new ClassGenerator.Builder<>(TestClass.class)
-                .setProportionOfNull(0.1f)  //set the proportion to generate null, default to 0.1f
+                .setProportionOfNull(0.1f)  //Set the proportion to generate null, default 0.1f
                 //Set generator of type (generator.getClassToGenerate()).
                 //It will use the generator to generate objects of this type afterwards.
                 .setTypeGenerator(new TestClass2Generator())
                 //Set the max layer of classes referencing tree. 
                 .setMaxLayer(4)
-                //Set subClasses of interface or abstract class. 
+                //Set sub classes of interface or abstract class. 
                 .setSubClass(TestInterface.class, subClasses)
                 .build();
         TestClass value = generator.generate();
 ```
+#### Attention
+One of the functions we have pay attention to is setMaxLayer(). If there is no limition of max layer. The generator can generate as many layers it want, then the generting process will never stop or the stack overflows. For example, if TestClass has a field of itself, then it needs to generates another object of TestClass and the new object also needs to generate a new object. Never stop. So it needs to add a limition of layer and it should not be too large.
 
-One of the functions we have pay attention to is setMaxLayer(). If there is no limition of max layer. The generator can generate as many layers it want, then the generting process will never stop or it stack overflow. For example, if TestClass has a field of itself, then it needs to generates another object of TestClass and the new object also needs to generate a new object. Never stop. So it needs to add a limition of layer and it should not too large.
-
-And it also needs using setSubClass() to set the subclasses if the class or its fields have interface or abstract classes or itself is an interface or abstract classes. If not settled, it doesn't know which class to generate for the interface or abstract class and it will throw RuntimeException.
+And it also needs using setSubClass() to set the sub classes if the class or its fields have interface or abstract classes or itself is an interface or abstract classes. If not settled, it doesn't know which class to generate for the interface or abstract class and it will throw RuntimeException.
 
 SetTypeGenerator() won't make effect if the parameter is an instance of ClassGenerator. It's a shortcoming of rog. And I will support it in the later version.
 
 ### Default Generator
-Besides ClassGenerator, there are other generators for special typs and primitive types. You don't need to use them because you can use ClassGenerator to generate objects of any types you want. It support to changing these generator's behaviors. And it's all right if you want to use them directly.
+Besides ClassGenerator, there are other generators for special types and primitive types. You don't need to use them because you can use ClassGenerator to generate objects of any types you want. It supports to change these generator's behaviors. And it's all right if you want to use them directly.
 #### Changing Behavior
 You can change the default generator's behaviors.
 
 ```java
         CharGenerator charGenerator = new CharGenerator.Builder()
-                .setValueSet(valuesSet)  //values generated will be fetched from this set
-                .setMinBound((char) 112)  //set the up bound of values generated
-                .setMaxBound((char)1)   //set the low bound of values generated
+                .setValueSet(valuesSet)  //Values generated will be fetched from this set
+                .setMinBound((char) 112)  //Set the up bound of values generated
+                .setMaxBound((char)1)   //Set the low bound of values generated
                 .build();
         ClassGenerator<TestClass> generator = new ClassGenerator.Builder<>(TestClass.class)
                 .setTypeGenerator(charGenerator)
                 .build();
 ```
 
-The example change the char's default generator for the ClassGenerator. And if the type is one of the primitive types. You can replace it in the process. 
+The example change the char's default generator for the object of ClassGenerator. And if the type is one of the primitive types. You can replace it in the whole process. 
 
 ``` java
         // Rog provides generators for primitive types. And you can also replace it with your implementation.
@@ -84,9 +84,9 @@ public class TestIntegerGenerator implements IGenerator<Integer>{
 ```java
         ArrayGenerator<TestClass2> generator = new ArrayGenerator.Builder<>( TestClass2[].class)
                 .setGenerator(new TestClass2Generator())
-                .setMaxLength(10)    //set the max length of array generated, default 100
-                .setLength(10)  //set a specific length for the array generated, default randomly
-                .setProportionOfNull(0.1f)       //set proportion to generate null
+                .setMaxLength(10)    //Set the max length of array generated, default 100
+                .setLength(10)  //Set a specific length for the array generated, default randomly
+                .setProportionOfNull(0.1f)       //Set proportion to generate null
                 .build();
         TestClass2[] object = generator.generate();
 ```
@@ -98,8 +98,8 @@ Generator to genrate enum. You
         List<TestEnum> valueSet = new ArrayList<>();
         valueSet.add(TestEnum.v1);
         EnumGenerator<TestEnum> generator = new EnumGenerator.Builder<>(TestEnum.class)
-                .setValueSet(valueSet)  //values generated will fetched from this set
-                .setProportionOfNull(0.5f)  //the proportion to generate null
+                .setValueSet(valueSet)  //Values generated will fetched from this set
+                .setProportionOfNull(0.5f)  //Set the proportion to generate null
                 .build();
         TestEnum value = generator.generate();
 ```
@@ -113,8 +113,6 @@ Generator to genrate enum. You
         objects.add(new TestInterfaceClass());
         InterfaceOrAbstractClassGenerator<TestInterface> generator = new InterfaceOrAbstractClassGenerator.Builder<>(TestInterface.class)
                 //Set the subClasses of TestInterface.
-                //If the framework can't find subclasses of any interface or abstract classes,
-                //It will throw RuntimeException.
                 .setClassSet(classes)
                 .setTypeGenerator(new TestInferfaceClassGenerator())   
                 .setScaleOfNull(0.1f)   //Set proportion  to generate null, default 0.1f
@@ -132,15 +130,15 @@ Generator to genrate enum. You
         StringGenerator generator = new StringGenerator.Builder()
                 .setCharSet(charSet)  //The characters of strings generated will be fetched from this set
                 .setValueSet(valueSet)  //Strings generated will be fetched from this set
-                .setMaxLength(11)  //set the max length of strings generated
+                .setMaxLength(11)  //Set the max length of strings generated
                 //.setGenerateNotEmpty(false) //Set if the generator generates not empty strings, default true
-                .setGenerateNull(false)  //set if the generator generates null, default true
-                .setGenerateEmpty(false)  //set if the generates empty string, default true
-                .setChineseProportion(1, 1)  //set the proportion of chinese to english characters when the mode is MODE_NORMAL
-                //MODE_RANDOM = 0;//generate unicode char randomly
-                //MODE_ASCII = 1;  //generate only ascii char
-                //MODE_NORMAL = 2; //generate only ascii char and chinese
-                .setMode(StringGenerator.MODE_NORMAL)  //set generate mode, default MODE_NORMAL
+                .setGenerateNull(false)  //Set if the generator generates null, default true
+                .setGenerateEmpty(false)  //Set if the generator generates empty string, default true
+                .setChineseProportion(1, 1)  //Set the proportion of chinese to english characters when the mode is MODE_NORMAL
+                //MODE_RANDOM = 0;//Generate unicode char randomly
+                //MODE_ASCII = 1;  //Generate only ascii char
+                //MODE_NORMAL = 2; //Generate only ascii char and chinese
+                .setMode(StringGenerator.MODE_NORMAL)  //Set generating mode, default MODE_NORMAL
                 .build();
         String value = generator.generate();
 ```
@@ -150,7 +148,7 @@ Generator to genrate enum. You
 		BooleanGenerator generator = new BooleanGenerator.Builder()
                 //.setGenerateTrue()        //Set if the generator generates true, default true.
                 //.setGenerateFalse(false)   //Set if the generator generates false, default true.
-                .setProportion(1, 1)   //set the proportion to generate true and false
+                .setProportion(1, 1)   //Set the proportion to generate true and false
                 .build();
         boolean value = generator.generate();
 ```
