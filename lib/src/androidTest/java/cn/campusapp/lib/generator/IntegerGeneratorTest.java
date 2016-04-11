@@ -73,7 +73,7 @@ public class IntegerGeneratorTest extends BaseUnitTest{
             IntegerGenerator generator = new IntegerGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() <= maxBound);
             }
         }
@@ -88,7 +88,7 @@ public class IntegerGeneratorTest extends BaseUnitTest{
             IntegerGenerator generator = new IntegerGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() >=minBound);
             }
         }

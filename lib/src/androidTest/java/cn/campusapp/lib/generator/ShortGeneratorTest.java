@@ -70,7 +70,7 @@ public class ShortGeneratorTest extends BaseUnitTest {
             ShortGenerator generator = new ShortGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 short generated = generator.generate();
                 if(generated >= maxBound ){
                     Timber.i("MaxBound: %d, Generated: %d", maxBound, generated);
@@ -89,7 +89,7 @@ public class ShortGeneratorTest extends BaseUnitTest {
             ShortGenerator generator = new ShortGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() >=minBound);
             }
         }

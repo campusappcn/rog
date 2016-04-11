@@ -72,7 +72,7 @@ public class DoubleGeneratorTest extends BaseUnitTest {
             DoubleGenerator generator = new DoubleGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 double generated = generator.generate();
                 Assert.assertTrue(generated <= maxBound);
             }
@@ -88,7 +88,7 @@ public class DoubleGeneratorTest extends BaseUnitTest {
             DoubleGenerator generator = new DoubleGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() >=minBound);
             }
         }

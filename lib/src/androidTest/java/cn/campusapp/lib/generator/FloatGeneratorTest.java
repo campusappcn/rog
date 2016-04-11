@@ -71,7 +71,7 @@ public class FloatGeneratorTest extends BaseUnitTest {
             FloatGenerator generator = new FloatGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 float generated = generator.generate();
                 Assert.assertTrue(generated <= maxBound);
             }
@@ -87,7 +87,7 @@ public class FloatGeneratorTest extends BaseUnitTest {
             FloatGenerator generator = new FloatGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() >=minBound);
             }
         }

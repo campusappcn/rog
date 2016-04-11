@@ -70,7 +70,7 @@ public class LongGeneratorTest extends BaseUnitTest {
             LongGenerator generator = new LongGenerator.Builder()
                     .setMaxBound(maxBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() < maxBound);
             }
         }
@@ -85,7 +85,7 @@ public class LongGeneratorTest extends BaseUnitTest {
             LongGenerator generator = new LongGenerator.Builder()
                     .setMinBound(minBound)
                     .build();
-            for(int j=0;j<10000;j++){
+            for(int j=0;j<1000;j++){
                 Assert.assertTrue(generator.generate() >=minBound);
             }
         }
