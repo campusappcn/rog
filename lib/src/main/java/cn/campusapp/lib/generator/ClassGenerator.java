@@ -17,6 +17,7 @@ import timber.log.Timber;
 
 /**
  * Created by kris on 16/3/28.
+ * The main interface for users
  */
 public class ClassGenerator<T> implements IGenerator<T> {
     private static int STRATEGY_STRICT = 0;  //strict,

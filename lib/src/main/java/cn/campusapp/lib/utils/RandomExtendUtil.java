@@ -4,6 +4,7 @@ import java.util.Random;
 
 /**
  * Created by kris on 16/3/28.
+ * An extend to Random
  */
 public class RandomExtendUtil {
 
