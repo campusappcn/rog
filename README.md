@@ -1,21 +1,21 @@
 # Random object generator
-Rog is an object generator mainly used in android test. It can create objects and set random values to their fields.
+Rog is an object generator designed for android test. It can create objects and set random values to their fields.
 
 ## 中文设计文档
 [Android随机对象生成器的设计与实现](http://sixwolf.net/blog/2016/04/08/Android%E9%9A%8F%E6%9C%BA%E5%AF%B9%E8%B1%A1%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/)
 ## Purpose
-It's annoied to make fake data when writing test cases. So Rog is created to help people do it. You can use it to get random data in test. And combined with gson and mock, you can get fake result without the server. Then you can do test work easily without server's implementation.   
+It's annoied to make fake data when writing test cases. So Rog is the rescue. You can use it to get random data in test. And combined with gson and mock, you can get fake result without the server. Then you can do test work easily without server's implementation.   
 
 ## Features  
 
-- The main feature of Rog is creating objects with random values of their fields. And it's all right when the class has fields of enum, interface, abstract class, other classes and array types.
-- It provides default generators for primitive types. These generators provide some function to change their behaviours. It also supports replacing the default generator with user's own implementations.
-- It providers default generators for special types including enum, interface, abstract class and array.
+- The main feature of Rog is to create objects with random values of their fields.
+- Primitive types can be generated with default generators. These generators' behavior can be customized, and even replaced by your own implementations.
+- Special types including enum, interface, abstract class and array are also well supported.
 
 
 ## Usage
 ### ClassGenerator
-You can use ClassGenerator to geneate any class you want even it's an array or enum, the special types we metioned above. 
+You can use ClassGenerator to generate any class you want even it's an array or enum, the special types we metioned above. 
 
 ```java
 		List<Class<? extends TestInterface>> subClasses = new ArrayList<>();
@@ -33,11 +33,13 @@ You can use ClassGenerator to geneate any class you want even it's an array or e
         TestClass value = generator.generate();
 ```
 #### Attention
-One of the functions we have pay attention to is setMaxLayer(). If there is no limition of max layer. The generator can generate as many layers it want, then the generting process will never stop or the stack overflows. For example, if TestClass has a field of itself, then it needs to generates another object of TestClass and the new object also needs to generate a new object. Never stop. So it needs to add a limition of layer and it should not be too large.
+Function ```setMaxLayer(int)``` can be used to set max depth of fields to generate.
 
-And it also needs using setSubClass() to set the sub classes if the class or its fields have interface or abstract classes or itself is an interface or abstract classes. If not settled, it doesn't know which class to generate for the interface or abstract class and it will throw RuntimeException.
+The generator generates fields recusively, so the generating process may never stop until stack overflows.  For example, if TestClass has a field of itself, then it needs to generates another object of TestClass and the new object also needs to generate a new object. Never stop. So it needs to add a limition of layer and it should not be too large.
 
-SetTypeGenerator() won't make effect if the parameter is an instance of ClassGenerator. It's a shortcoming of rog. And I will support it in the later version.
+And function ```setSubClass()``` should be used to set the sub classes when the class or its fields's types are interfaces or abstract classes or itself is an interface or abstract classes. Otherwise, RuntimeException will be thrown for it doesn't know which class to generate for the interface or abstract class.
+
+```SetTypeGenerator()``` won't make effect if the parameter is an instance of ClassGenerator. It's a shortcoming of rog. And I will support it in the later version.
 
 ### Default Generator
 Besides ClassGenerator, there are other generators for special types and primitive types. You don't need to use them because you can use ClassGenerator to generate objects of any types you want. It supports to change these generator's behaviors. And it's all right if you want to use them directly.
