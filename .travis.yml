@@ -4,6 +4,8 @@ env:
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
 android:
   components:
+    - tools
+    - platform-tools
     - build-tools-23.0.2
     - android-23
     - extra-android-m2repository
@@ -15,7 +17,7 @@ before_script:
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
 script:
-    - ./gradlew createDebugAndroidTestCoverageReport
+    - ./gradlew :lib:createDebugAndroidTestCoverageReport
 after_success:
     - bash <(curl -s https://codecov.io/bash)
 
