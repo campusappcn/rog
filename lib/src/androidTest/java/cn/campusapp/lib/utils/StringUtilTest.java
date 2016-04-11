@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import cn.campusapp.lib.BaseUnitTest;
-import timber.log.Timber;
 
 /**
  * Created by kris on 16/3/30.
@@ -26,7 +25,6 @@ public class StringUtilTest extends BaseUnitTest {
             String ret = StringUtil.generateRandomChineseWord();
             str += ret;
         }
-        Timber.i(str);
         Assert.assertTrue(str.length() == 1000);
 
 
@@ -38,7 +36,6 @@ public class StringUtilTest extends BaseUnitTest {
         for(int i=0;i<1000;i++){
            str += StringUtil.generateRandomEnglishChar();
         }
-        Timber.i(str);
         Assert.assertTrue(str.length() == 1000);
 
     }
@@ -50,7 +47,6 @@ public class StringUtilTest extends BaseUnitTest {
         for(int i=0;i<1000;i++){
             str += StringUtil.generateRandomChar();
         }
-        Timber.i(str);
         Assert.assertTrue(str.length() == 1000);
     }
 

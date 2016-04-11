@@ -20,7 +20,6 @@ import cn.campusapp.lib.generator.classes.TestClass3;
 import cn.campusapp.lib.generator.classes.TestClass4;
 import cn.campusapp.lib.generator.classes.TestInterface;
 import cn.campusapp.lib.generator.classes.TestInterfaceClass;
-import timber.log.Timber;
 
 /**
  * Created by kris on 16/4/6.
@@ -36,7 +35,6 @@ public class ClassGeneratorTest extends BaseUnitTest{
                 .build();
         for(int i=0;i<10;i++) {
             TestClass object = generator.generate();
-            Timber.i(object != null ? object.toString(): null);
         }
     }
 

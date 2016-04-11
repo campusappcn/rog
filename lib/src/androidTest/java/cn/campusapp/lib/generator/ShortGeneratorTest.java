@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 
 import cn.campusapp.lib.BaseUnitTest;
-import timber.log.Timber;
 
 /**
  * Created by kris on 16/4/5.
@@ -72,9 +71,6 @@ public class ShortGeneratorTest extends BaseUnitTest {
                     .build();
             for(int j=0;j<1000;j++){
                 short generated = generator.generate();
-                if(generated >= maxBound ){
-                    Timber.i("MaxBound: %d, Generated: %d", maxBound, generated);
-                }
                 Assert.assertTrue(generated <= maxBound);
             }
         }

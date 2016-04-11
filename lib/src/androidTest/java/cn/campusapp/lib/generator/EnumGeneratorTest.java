@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.campusapp.lib.BaseUnitTest;
-import timber.log.Timber;
 
 /**
  * Created by kris on 16/4/5.
@@ -48,10 +47,6 @@ public class EnumGeneratorTest extends BaseUnitTest{
                 .setProportionOfNull(0.0f)
                 .build();
         for(int i=0;i<1000;i++){
-            TestEnum generated = generator.generate();
-            if(!testEnums.contains(generated)){
-                Timber.i(generated.toString());
-            }
             Assert.assertTrue(testEnums.contains(generator.generate()));
         }
     }
