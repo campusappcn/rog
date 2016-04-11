@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.campusapp.rog">
+    package="cn.campusapp.rogsample">
 
     <application
         android:allowBackup="true"

@@ -1,4 +1,4 @@
-package cn.campusapp.lib;
+package cn.campusapp.rog;
 
 import org.junit.Test;
 
