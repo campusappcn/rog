@@ -1,7 +1,10 @@
 # Random object generator
 Rog is an object generator designed for android test. It can create objects and set random values to their fields.
 
-![](https://jitpack.io/v/campusappcn/rog.svg)
+[![](https://jitpack.io/v/campusappcn/rog.svg)](https://jitpack.io/#campusappcn/rog)
+[![Build Status](https://travis-ci.org/campusappcn/rog.svg?branch=master)](https://travis-ci.org/campusappcn/rog)
+[![codecov.io](https://codecov.io/github/campusappcn/rog/coverage.svg?branch=master)](https://codecov.io/github/campusappcn/rog?branch=master)
+
 ## 中文设计文档
 [Android随机对象生成器的设计与实现](http://sixwolf.net/blog/2016/04/08/Android%E9%9A%8F%E6%9C%BA%E5%AF%B9%E8%B1%A1%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/)
 ## Purpose
